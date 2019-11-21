@@ -74,7 +74,7 @@ class WorkerChannel(ChannelHandler):
             self.open()
             self.add_on_cancel_callback()
             self._channel.basic_consume(self.on_message, self._queue)
-            LOGGER.info(' [*] Waiting for message')
+            LOGGER.info("[*] Waiting for message")
             self._channel.start_consuming()
         except KeyboardInterrupt:
             LOGGER.info('The Worker will be exit after CTRL+C signal')
