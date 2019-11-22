@@ -13,9 +13,7 @@ config = configparser.ConfigParser()
 config.read('server.ini')
 
 QUEUES = [
-    config['rabbitmq'].get('queue_odoo_manual'),
-    config['rabbitmq'].get('queue_odoo_colissimo'),
-    config['rabbitmq'].get('queue_odoo_chronopost'),
+    config['queues'].get(queue) for queue in config['queues']
 ]
 
 rabbitmq_url = 'amqp://{user}:{password}@{host}:{port}/%{path}'.format(
@@ -69,7 +67,7 @@ def start(queue):
 
 def main():
     for quene in QUEUES:
-        prcess = Process(target=start, args=(quene,)).start()
+        Process(target=start, args=(quene,)).start()
 
 
 if __name__ == '__main__':
