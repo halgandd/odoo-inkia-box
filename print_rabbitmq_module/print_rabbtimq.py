@@ -13,7 +13,7 @@ config = configparser.ConfigParser()
 config.read('server.ini')
 
 QUEUES = [
-    config['rabbitmq'].get('queue_odoo_manul'),
+    config['rabbitmq'].get('queue_odoo_manual'),
     config['rabbitmq'].get('queue_odoo_colissimo'),
     config['rabbitmq'].get('queue_odoo_chronopost'),
 ]
@@ -38,32 +38,39 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-def data_process_function(msg):
+def process_message(msg):
     logger.info("Data processing of picking name %s and id %s" % (msg.get('picking_name'), msg.get('picking_id')))
     report_name = "%s_%s.%s" % (msg.get('picking_id') or 'picking_id', msg.get('created_at') or 'created_at', msg.get('file_extension') or 'pdf')
-    with open(report_name, 'wb') as theFile:
-        theFile.write(base64.b64decode(msg.get('data')) if msg.get('file_extension') == 'pdf' else msg.get('data'))
+    mode = "wb" if msg.get('file_extension') in ['pdf','PDF'] else "w+"
+    with open(report_name, mode) as theFile:
+        theFile.write(base64.b64decode(msg.get('data')) if msg.get('file_extension') in ['pdf','PDF'] else msg.get('data'))
         logger.info("create report name %s" % (report_name))
-    logger.info("Send Data to printer %s" % (report_name))
+    theFile.close()
     try:
         conn = cups.Connection()
         conn.printFile(config['printer'].get('%s_printer_name'%(msg.get('queue') or 'pdf')), report_name, "Python_Status_print", {})
         logger.info("Send Data to printer %s" % (report_name))
-        os.remove(report_name)
     except:
-        logger.info("problem to delete file %s" % (report_name))
+        logger.info("problem to send file %s" % (report_name))
+    os.remove(report_name)
 
-def process_message(message):
-    data_process_function(message)
-
-def start(queue):
+def init_app():
     broker = BrokerRabbitMQ()
     broker.init_app(rabbitmq_url=rabbitmq_url,
                     exchange_name=exchange_name,
                     delivery_mode=delivery_mode,
                     queues=QUEUES, on_message_callback=process_message)
+    return broker
+
+
+def start(queue):
+    broker = init_app()
     broker.start(queue)
 
-if __name__ == '__main__':
+def main():
     for quene in QUEUES:
         prcess = Process(target=start, args=(quene,)).start()
+
+
+if __name__ == '__main__':
+    main()
