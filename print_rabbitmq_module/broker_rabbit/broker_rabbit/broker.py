@@ -1,12 +1,12 @@
 from datetime import datetime
 
 
-from broker_rabbit.channels import ProducerChannel
-from broker_rabbit.exceptions import UnknownQueueError
+from .channels import ProducerChannel
+from .exceptions import UnknownQueueError
 
-from broker_rabbit.connection_handler import ConnectionHandler
-from broker_rabbit.producer import Producer
-from broker_rabbit.worker import Worker
+from .connection_handler import ConnectionHandler
+from .producer import Producer
+from .worker import Worker
 
 DEFAULT_URL = 'amqp://test:test@localhost:5672/foo-test'
 DEFAULT_EXCHANGE = 'FOO-EXCHANGE'

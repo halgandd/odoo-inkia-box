@@ -1,4 +1,4 @@
-from broker_rabbit.exceptions import (ChannelUndefinedError,
+from .exceptions import (ChannelUndefinedError,
                                       ExchangeUndefinedError)
 
 
@@ -36,7 +36,7 @@ class ExchangeHandler:
 
         # Check Me : self._channel.basic_qos(prefetch_count=1)
         self._channel.exchange_declare(
-            exchange=self._name, type=exchange_type,
+            exchange=self._name, exchange_type=exchange_type,
             durable=durable, auto_delete=auto_delete)
 
     @property

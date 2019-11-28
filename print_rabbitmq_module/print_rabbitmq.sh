@@ -17,14 +17,13 @@
 #################################################################
 # Init constants
 #################################################################
-DIR=/home/pi/odoo-box/picking_printer_server/print_rabbtimq_module
+DIR=/opt/script_print_rabbitmq
 DAEMON_DESC="print_rabbtimq"
 PIDDIR=/var/run/print_rabbtimq
-PIDFILE=/var/run/$DAEMON_NAME.pid
-DAEMON=$DIR/print_rabbtimq.py
-LOG=/var/log/print_rabbtimq.log
+PIDFILE=$DAEMON_DESC.pid
+DAEMON=$DIR/print_rabbitmq.py
+LOG=/var/log/print_rabbitmq.log
 DAEMON_OPTS="-l $LOG"
-DAEMON_DESC="print_rabbtimq"
 USER="root"
 LIMIT=80
 SCRIPTNAME=/etc/init.d/"$NAME"
@@ -122,10 +121,5 @@ case "$1" in
 
   *)
     echo "Usage: $0 start|stop|restart"
-    exit 1
     ;;
 esac
-
-sleep 1
-exit 0
-

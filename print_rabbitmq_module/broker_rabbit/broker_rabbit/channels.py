@@ -4,7 +4,7 @@ import json
 import pika
 from pika.utils import is_callable
 
-from broker_rabbit.exceptions import (
+from .exceptions import (
     ConnectionNotOpenedError, ChannelUndefinedError,
     WorkerExitError, ConnectionIsClosedError, CallBackError)
 
