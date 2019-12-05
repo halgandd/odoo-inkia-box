@@ -1,0 +1,21 @@
+image: docker:latest
+
+variables:
+  DOCKER_DRIVER: overlay
+
+services:
+- docker:dind
+
+before_script:
+  - docker info
+  - apk update
+  - apk upgrade
+  - apk add python python-dev py-pip build-base
+  - pip install docker-compose
+  - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" --password-stdin
+
+build:
+  stage: build
+  script:
+    - docker-compose build
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME

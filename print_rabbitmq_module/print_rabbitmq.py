@@ -63,8 +63,11 @@ def init_app():
 
 
 def main():
-    broker = init_app()
-    broker.start(queue)
+    try:
+        broker = init_app()
+        broker.start(queue)
+    except Exception as e:
+        logger.error("Error %s" % (e))
 
 
 if __name__ == '__main__':

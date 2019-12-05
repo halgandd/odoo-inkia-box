@@ -7,7 +7,7 @@ services:
       environment:
           RABBITMQ_USER : guest
           RABBITMQ_PASSWORD : guest
-          RABBITMQ_HOST : 10.0.0.4
+          RABBITMQ_HOST : 10.0.0.5
           RABBITMQ_PORT : 5672
           RABBITMQ_PATH : 2f
           RABBITMQ_EXCHANGE_NAME : exchange_name
@@ -16,13 +16,28 @@ services:
           LOG_LEVEL : INFO
           QUEUE_NAME : colissimo
           PRINTER_NAME : HP_Color_LaserJet_MFP_M476nw
+          QUEUE_CONFIGURATION : raspberry
       restart: always
       working_dir: /opt/script_print_rabbitmq
       command: ./print_rabbitmq.py
       #command: /etc/init.d/print_rabbitmq restart
+      links:
+        - cups
+
+  cups:
+      image: thbe/cups
+      volumes:
+        - ./config/cupsd.conf:/etc/cups/cupsd.conf:z
+      ports:
+        - 631:631
+      restart: always
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.printer.rule=Host(`printer.local`)"
+        - "traefik.http.routers.printer.service=printer"
+        - "traefik.http.services.printer.loadbalancer.server.port=631"
 
 networks:
   default:
-    external:
-      name: dev_teclib
+      driver: bridge
 
