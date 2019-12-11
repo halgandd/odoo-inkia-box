@@ -1,0 +1,3 @@
+SUBSYSTEM=="usb", GROUP="usbusers", MODE="0660"
+SUBSYSTEMS=="usb", GROUP="usbusers", MODE="0660"
+ACTION=="add",KERNEL=="sd*", SUBSYSTEMS=="usb", ATTRS{product}=="*", RUN+="/home/pi/odoo-box/informations_printer_rpi/scaning_network.sh %k"
