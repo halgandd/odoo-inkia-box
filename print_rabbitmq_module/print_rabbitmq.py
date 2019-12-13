@@ -1,37 +1,37 @@
 #!/usr/bin/env python3
-import pika, os, time
 import base64
 from time import sleep
 from broker_rabbit import BrokerRabbitMQ
-from multiprocessing import Process
 import logging
 from logging.handlers import RotatingFileHandler
-import configparser
 import cups
 import os
-config = configparser.ConfigParser()
-config.read('server.ini')
 
-QUEUES = [
-    config['queues'].get(queue) for queue in config['queues']
-]
+queue = os.environ.get("QUEUE_NAME")
+user =  os.environ.get("RABBITMQ_USER")
+password =  os.environ.get("RABBITMQ_PASSWORD")
+host =  os.environ.get("RABBITMQ_HOST")
+port =  os.environ.get("RABBITMQ_PORT")
+path =  os.environ.get("RABBITMQ_PATH")
+exchange_name =  os.environ.get("RABBITMQ_EXCHANGE_NAME")
+delivery_mode =  os.environ.get("RABBITMQ_DELIVERY_MODE")
+logfile =  os.environ.get("FILELOG")
+log_level =  os.environ.get("LOG_LEVEL")
+printer_name = os.environ.get("PRINTER_NAME")
 
 rabbitmq_url = 'amqp://{user}:{password}@{host}:{port}/%{path}'.format(
-    user=config['rabbitmq'].get('rabbitmq_user'),
-    password=config['rabbitmq'].get('rabbitmq_password'),
-    host=config['rabbitmq'].get('rabbitmq_host'),
-    port=config['rabbitmq'].get('rabbitmq_port'),
-    path=config['rabbitmq'].get('rabbitmq_path'),
+    user=user,
+    password=password,
+    host=host,
+    port=port,
+    path=path,
 )
-
-exchange_name = config['rabbitmq'].get('rabbitmq_exchange_name')
-delivery_mode=int(config['rabbitmq'].get('rabbitmq_delibery_mode'))
 
 logger = logging.getLogger()
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
 # ACTIVITY
-file_handler = RotatingFileHandler(config['log'].get('filelog'), 'a', 1000000, 1)
-logger.setLevel(eval("logging.%s"%(config['log'].get('log_level'))))
+file_handler = RotatingFileHandler(logfile, 'a', 1000000, 1)
+logger.setLevel(eval("logging.%s"%(log_level)))
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
@@ -46,28 +46,28 @@ def process_message(msg):
     theFile.close()
     try:
         conn = cups.Connection()
-        conn.printFile(config['printer'].get('%s_printer_name'%(msg.get('queue') or 'pdf')), report_name, "Python_Status_print", {})
+        conn.printFile(printer_name, report_name, "Python_Status_print", {})
         logger.info("Send Data to printer %s" % (report_name))
     except:
-        logger.info("problem to send file %s" % (report_name))
+        logger.info("printer problem %s" % (report_name))
     os.remove(report_name)
+    sleep(2)
 
 def init_app():
     broker = BrokerRabbitMQ()
     broker.init_app(rabbitmq_url=rabbitmq_url,
                     exchange_name=exchange_name,
                     delivery_mode=delivery_mode,
-                    queues=QUEUES, on_message_callback=process_message)
+                    queues=[queue], on_message_callback=process_message)
     return broker
 
 
-def start(queue):
-    broker = init_app()
-    broker.start(queue)
-
 def main():
-    for quene in QUEUES:
-        Process(target=start, args=(quene,)).start()
+    try:
+        broker = init_app()
+        broker.start(queue)
+    except Exception as e:
+        logger.error("Error %s" % (e))
 
 
 if __name__ == '__main__':

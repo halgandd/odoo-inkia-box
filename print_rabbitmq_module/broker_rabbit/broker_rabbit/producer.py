@@ -1,6 +1,6 @@
-from broker_rabbit.exceptions import QueueDoesNotExistError
-from broker_rabbit.exchange_handler import ExchangeHandler
-from broker_rabbit.queue_handler import QueueHandler
+from .exceptions import QueueDoesNotExistError
+from .exchange_handler import ExchangeHandler
+from .queue_handler import QueueHandler
 
 
 class Producer:

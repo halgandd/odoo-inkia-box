@@ -1,4 +1,4 @@
-from broker_rabbit.exceptions import (ChannelUndefinedError,
+from .exceptions import (ChannelUndefinedError,
                                       ExchangeUndefinedError)
 
 
