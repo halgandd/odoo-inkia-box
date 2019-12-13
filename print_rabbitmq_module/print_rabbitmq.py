@@ -6,20 +6,23 @@ import logging
 from logging.handlers import RotatingFileHandler
 import cups
 import os
+from multiprocessing import Process
 
-queue = os.environ.get("QUEUE_NAME")
+queues = os.environ.get("QUEUE_NAMES").split(',')
 user =  os.environ.get("RABBITMQ_USER")
 password =  os.environ.get("RABBITMQ_PASSWORD")
 host =  os.environ.get("RABBITMQ_HOST")
 port =  os.environ.get("RABBITMQ_PORT")
 path =  os.environ.get("RABBITMQ_PATH")
+https = os.environ.get("HTTPS")
 exchange_name =  os.environ.get("RABBITMQ_EXCHANGE_NAME")
 delivery_mode =  os.environ.get("RABBITMQ_DELIVERY_MODE")
 logfile =  os.environ.get("FILELOG")
 log_level =  os.environ.get("LOG_LEVEL")
 printer_name = os.environ.get("PRINTER_NAME")
 
-rabbitmq_url = 'amqp://{user}:{password}@{host}:{port}/%{path}'.format(
+rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/%{path}'.format(
+    https=eval(https) and 's' or '',
     user=user,
     password=password,
     host=host,
@@ -37,6 +40,7 @@ logger.addHandler(file_handler)
 
 
 def process_message(msg):
+    printer_name = msg.get('printer_name')
     logger.info("Data processing of picking name %s and id %s" % (msg.get('picking_name'), msg.get('picking_id')))
     report_name = "%s_%s.%s" % (msg.get('picking_id') or 'picking_id', msg.get('created_at') or 'created_at', msg.get('file_extension') or 'pdf')
     mode = "wb" if msg.get('file_extension') in ['pdf','PDF'] else "w+"
@@ -58,16 +62,17 @@ def init_app():
     broker.init_app(rabbitmq_url=rabbitmq_url,
                     exchange_name=exchange_name,
                     delivery_mode=delivery_mode,
-                    queues=[queue], on_message_callback=process_message)
+                    queues=queues, on_message_callback=process_message)
     return broker
 
 
+def start(queue):
+    broker = init_app()
+    broker.start(queue)
+
 def main():
-    try:
-        broker = init_app()
-        broker.start(queue)
-    except Exception as e:
-        logger.error("Error %s" % (e))
+    for quene in queues:
+        Process(target=start, args=(quene,)).start()
 
 
 if __name__ == '__main__':

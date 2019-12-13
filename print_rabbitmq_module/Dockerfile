@@ -27,7 +27,7 @@ RUN pip3 install /tmp/broker_rabbit
 
 COPY requirements.txt /tmp/
 RUN pip3 install -r /tmp/requirements.txt
-
-COPY ./print_rabbitmq.sh /etc/init.d/print_rabbitmq
-RUN chmod 755 /etc/init.d/print_rabbitmq
-RUN update-rc.d print_rabbitmq defaults
+#
+#COPY ./print_rabbitmq.sh /etc/init.d/print_rabbitmq
+#RUN chmod 755 /etc/init.d/print_rabbitmq
+#RUN update-rc.d print_rabbitmq defaults
