@@ -1,0 +1,60 @@
+{% extends "base/base.html" %}
+{%block content%}
+<section class="fdb-block">
+    <div class="container">
+        <div class="container align-items-center justify-content-center d-flex">
+            <div class="row align-items-center text-left">
+                <div class="col-12">
+                    <div>
+                        <strong>Cups printer</strong>
+                         {% if cups_printer %}
+                            <ul>
+                                {% for printer in cups_printer %}
+                                    <li>{{ printer }}</li>
+                                {% endfor %}
+                            </ul>
+                         {% endif %}
+                    </div>
+                    <div>
+                         <strong>Network devices</strong>
+                            {% if network_devices %}
+                            <ul>
+                                {% for device in network_devices %}
+                                    <li>{{ device }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                    </div>
+                    <div>
+                           <strong>Usb devices</strong>
+                            {% if usb_devices %}
+                            <ul>
+                                {% for device in usb_devices %}
+                                    <li>{{ device }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                    </div>
+                    <div>
+                        <strong>Host mac address</strong>
+                            {% if host_mac_address %}
+                            <ul>
+                                <li>{{ host_mac_address }}</li>
+                            </ul>
+                            {% endif %}
+                    </div>
+                    <div>
+                        <strong>Raspberry name</strong>
+                            {% if raspberry_name %}
+                            <ul>
+                                <li>{{ raspberry_name }}</li>
+                            </ul>
+                            {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{%endblock%}
+

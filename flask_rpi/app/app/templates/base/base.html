@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0" name="viewport"/>
+    <meta charset="utf-8">
+    <link href="{{ url_for('static', filename='imgs/favicon.png') }}" rel="icon"/>
+    <title>{% block title %}{% endblock %}</title>
+    <meta content="{{ self.title() }}" name="title"/>
+    <meta content="{% block description %}{% endblock %}" name="description"/>
+    <meta content="{% block keywords %}{% endblock %}" name="keywords">
+    <meta content="{{ self.title() }}" property="og:title"/>
+    <meta content="{{ self.description() }}" property="og:description"/>
+    <meta content="{{ url_for('static', filename='imgs/logo.png') }}" property="og:image"/>
+
+    {% include 'base/css.html' %}
+    {% include 'base/script.html' %}
+    {% block script %}{% endblock %}
+</head>
+
+<body>
+
+<header>
+    {% include 'header.html' %}
+</header>
+
+{% block content %}{% endblock %}
+
+<footer>
+</footer>
+
+</body>
+</html>

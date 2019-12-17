@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 HOST_NAME=odoo.inkia.fr
 set -o errexit
 set -o nounset

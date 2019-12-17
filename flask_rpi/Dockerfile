@@ -21,14 +21,14 @@ printer-driver-all \
 foomatic-db-compressed-ppds \
 openprinting-ppds \
 gutenprint-locales \
-python-nmap
+usbutils \
+nmap
 
-COPY ./broker_rabbit /tmp/broker_rabbit
-RUN pip3 install /tmp/broker_rabbit
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
-COPY requirements.txt /tmp/
-RUN pip3 install -r /tmp/requirements.txt
-#
-#COPY ./print_rabbitmq.sh /etc/init.d/print_rabbitmq
-#RUN chmod 755 /etc/init.d/print_rabbitmq
-#RUN update-rc.d print_rabbitmq defaults
+COPY app /app
+WORKDIR /app
+
+ENTRYPOINT ["python3"]
+CMD ["run.py"]

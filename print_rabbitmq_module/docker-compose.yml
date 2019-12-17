@@ -4,6 +4,8 @@ services:
       build: .
       volumes:
         - .:/opt/script_print_rabbitmq
+      env_file:
+        - /opt/file_env/file.env
       environment:
           UDEV : 1
           RABBITMQ_USER : guest
@@ -18,10 +20,10 @@ services:
           QUEUE_NAMES : colissimo,manual,chronopost
           QUEUE_CONFIGURATION : config_raspberry
           HTTPS : 0
+          #RASPBERRY_NAME : raspberry_name
       restart: always
       working_dir: /opt/script_print_rabbitmq
       command: ./print_rabbitmq.py
-    #command: /etc/init.d/print_rabbitmq restart
       privileged: true
       devices:
           - /dev:/dev
@@ -32,6 +34,9 @@ services:
       image: thbe/cups
       volumes:
         - ./config/cupsd.conf:/etc/cups/cupsd.conf:z
+        - ../infomations_printer_rpi:/opt/scripts
+      env_file:
+        - /opt/file_env/file.env
       ports:
         - 631:631
       restart: always
@@ -40,12 +45,6 @@ services:
         - "traefik.http.routers.printer.rule=Host(`printer.local`)"
         - "traefik.http.routers.printer.service=printer"
         - "traefik.http.services.printer.loadbalancer.server.port=631"
-#
-#networks:
-#  default:
-#    external:
-#      name: dev_teclib
-
 
 networks:
   default:
