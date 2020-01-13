@@ -4,23 +4,20 @@ services:
       build: .
       volumes:
         - .:/opt/script_print_rabbitmq
-      env_file:
-        - /opt/file_env/file.env
       environment:
           UDEV : 1
-          RABBITMQ_USER : guest
-          RABBITMQ_PASSWORD : guest
-          RABBITMQ_HOST : dev_rabbitmq
+          RABBITMQ_USER : admin
+          RABBITMQ_PASSWORD : IWmnh7hqWczlk
+          RABBITMQ_HOST : service.rabbitmq.recette-erp12.interne.inkia.fr
           RABBITMQ_PORT : 5672
-          RABBITMQ_PATH : 2f
+          RABBITMQ_PATH : 2F
           RABBITMQ_EXCHANGE_NAME : exchange_name
           RABBITMQ_DELIVERY_MODE : 2
           FILELOG : /var/log/print_rabbitmq.log
           LOG_LEVEL : INFO
           QUEUE_NAMES : colissimo,manual,chronopost
           QUEUE_CONFIGURATION : config_raspberry
-          HTTPS : 0
-          #RASPBERRY_NAME : raspberry_name
+          HTTPS : 1
       restart: always
       working_dir: /opt/script_print_rabbitmq
       command: ./print_rabbitmq.py
@@ -31,22 +28,12 @@ services:
         - cups
 
   cups:
-      image: thbe/cups
+      image: lemariva/rpi-cups
+      network_mode : host
       volumes:
         - ./config/cupsd.conf:/etc/cups/cupsd.conf:z
-        - ../infomations_printer_rpi:/opt/scripts
-      env_file:
-        - /opt/file_env/file.env
       ports:
         - 631:631
       restart: always
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.printer.rule=Host(`printer.local`)"
-        - "traefik.http.routers.printer.service=printer"
-        - "traefik.http.services.printer.loadbalancer.server.port=631"
 
-networks:
-  default:
-      driver: bridge
 
