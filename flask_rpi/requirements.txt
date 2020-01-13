@@ -1,0 +1,10 @@
+Flask
+Flask-Caching
+Flask-Compress
+Flask-Assets
+Flask-WTF
+unidecode
+unicode
+requests
+python-nmap
+cups

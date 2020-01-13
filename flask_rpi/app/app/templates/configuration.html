@@ -1,0 +1,43 @@
+{% extends "base/base.html" %}
+{%block content%}
+<!-- Contacts 10 -->
+<section class="fdb-block">
+    <div class="container">
+        <div class="row text-center justify-content-center">
+            <div class="col-12 col-md-8 col-lg-7">
+                <h2>Configurer votre carte Raspberry</h2>
+            </div>
+        </div>
+        <div class="row-70"></div>
+        <div class="row">
+            <div class="col-12 col-md-8 col-lg m-auto">
+                <form action="/form/env_file" method="post">
+                    <input name='redirect_to' type='hidden' value='confirmation.html'/>
+                    <div class="row">
+                        <div class="col">
+                            <input class="form-control" name="raspberry_name" placeholder="Nom de raspberry" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <input class="form-control" name="cups_login" placeholder="Cups login" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <input class="form-control" name="cups_password" placeholder="Cups password" type="tel">
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col">
+                            <button class="btn btn-primary" type="submit">Envoyer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{%endblock%}

@@ -26,10 +26,8 @@ class ConnectionHandler:
             It's not recommended to keep it to 0.25. So, we change it to 5.
         """
 
-        self.parameters = pika.URLParameters(url)
-        self.parameters.heartbeat = 0
-        self.parameters.socket_timeout = timeout
-        self._connection = pika.BlockingConnection(self.parameters)
+        parameters = pika.URLParameters(url)
+        self._connection = pika.BlockingConnection(parameters)
 
     def close_connection(self):
         self._connection.close()
