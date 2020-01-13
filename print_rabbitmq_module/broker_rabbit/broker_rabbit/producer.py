@@ -31,9 +31,8 @@ class Producer:
             queue_handler = QueueHandler(channel, self._exchange_name)
             for queue in queues:
                 queue_handler.setup_queue(queue)
-        finally:
-            self._queues = queues
-            self._channel.close()
+        except:
+            pass
 
     def publish(self, queue, message):
         """Publish the given message in the given queue
