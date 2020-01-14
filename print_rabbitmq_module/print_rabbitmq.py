@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 import base64
 from time import sleep
-from broker_rabbit import BrokerRabbitMQ
+import pika
 import logging
 from logging.handlers import RotatingFileHandler
 import cups
 import os
-from multiprocessing import Process
-queues = ['colissimo']
+import json
+from functools import partial
+import threading, time
 queues = os.environ.get("QUEUE_NAMES").split(',')
 user =  os.environ.get("RABBITMQ_USER")
 password =  os.environ.get("RABBITMQ_PASSWORD")
@@ -30,7 +31,7 @@ rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/%{path}'.format(
     path=path,
 )
 
-rabbitmq_url = 'amqp://zzjkzkee:lDtW8VuBUEUiSTFc-oA09DFctJ3j971u@clam.rmq.cloudamqp.com/zzjkzkee'
+#rabbitmq_url = 'amqp://zzjkzkee:lDtW8VuBUEUiSTFc-oA09DFctJ3j971u@clam.rmq.cloudamqp.com/zzjkzkee'
 logger = logging.getLogger()
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
 # ACTIVITY
@@ -40,43 +41,45 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-def process_message(msg):
-    printer_name = msg.get('printer_name')
-    logger.info("Data processing of picking name %s and id %s" % (msg.get('picking_name'), msg.get('picking_id')))
-    report_name = "%s_%s.%s" % (msg.get('picking_id') or 'picking_id', msg.get('created_at') or 'created_at', msg.get('file_extension') or 'pdf')
-    mode = "wb" if msg.get('file_extension') in ['pdf','PDF'] else "w+"
-    with open(report_name, mode) as theFile:
-        theFile.write(base64.b64decode(msg.get('data')) if msg.get('file_extension') in ['pdf','PDF'] else msg.get('data'))
-        logger.info("create report name %s" % (report_name))
-    theFile.close()
-    try:
-        conn = cups.Connection()
-        conn.printFile(printer_name, report_name, "Python_Status_print", {})
-        logger.info("Send Data to printer %s" % (report_name))
-    except:
-        logger.info("printer problem %s" % (report_name))
-    os.remove(report_name)
-    sleep(2)
+def process_message(body):
+    if body:
+        decoded_message = body.decode()
+        msg = json.loads(decoded_message)
+        logger.info("Send Data to printer %s" % (msg))
+        printer_name = msg.get('printer_name')
+        logger.info("Data processing of picking name %s and id %s" % (msg.get('picking_name'), msg.get('picking_id')))
+        report_name = "%s_%s.%s" % (
+        msg.get('picking_id') or 'picking_id', msg.get('created_at') or 'created_at', msg.get('file_extension') or 'pdf')
+        mode = "wb" if msg.get('file_extension') in ['pdf', 'PDF'] else "w+"
+        with open(report_name, mode) as theFile:
+            theFile.write(
+                base64.b64decode(msg.get('data')) if msg.get('file_extension') in ['pdf', 'PDF'] else msg.get('data'))
+            logger.info("create report name %s" % (report_name))
+        theFile.close()
+        try:
+            conn = cups.Connection()
+            conn.printFile(printer_name, report_name, "Python_Status_print", {})
+            logger.info("Send Data to printer %s" % (report_name))
+        except:
+            logger.info("printer problem %s" % (report_name))
+        os.remove(report_name)
+        sleep(2)
 
-def init_app():
-    broker = BrokerRabbitMQ()
-    broker.init_app(rabbitmq_url=rabbitmq_url,
-                    exchange_name=exchange_name,
-                    delivery_mode=delivery_mode,
-                    queues=queues, on_message_callback=process_message)
-    return broker
-
-
-def start(queue):
-    broker = init_app()
-    broker.start(queue)
-
-def main():
-    start('colissimo')
-
-    # for quene in queues:
-    #     Process(target=start, args=(quene,)).start()
+def callback(ch, method, properties, body):
+    logger.info("[x] received %r" % (body,))
+    process_message(body)
 
 
-if __name__ == '__main__':
-    main()
+def run():
+    for queue in queues:
+        params = pika.URLParameters(rabbitmq_url)
+        connection = pika.BlockingConnection(params)
+        logger.info("start consuming %s" %(queue))
+        channel = connection.channel()
+        channel.queue_declare(queue=queue, durable=True)
+        callback2 = partial(callback)
+        channel.basic_consume(queue=queue, on_message_callback=callback2, auto_ack=True)
+        thread = threading.Thread(target=channel.start_consuming)
+        thread.start()
+
+run()
