@@ -1,6 +1,8 @@
 import logging
 import json
+
 import pika
+from pika.utils import is_callable
 
 from .exceptions import (
     ConnectionNotOpenedError, ChannelUndefinedError,
@@ -42,7 +44,7 @@ class ChannelHandler:
 
     def close(self):
         LOGGER.info('The channel will close in a few time')
-        #self._channel.close()
+        self._channel.close()
 
     def get_channel(self):
         LOGGER.info('Getting the channel object')
@@ -71,7 +73,7 @@ class WorkerChannel(ChannelHandler):
             """
             self.open()
             self.add_on_cancel_callback()
-            self._channel.basic_consume(self._queue, self.on_message)
+            self._channel.basic_consume(self.on_message, self._queue)
             LOGGER.info("[*] Waiting for message")
             self._channel.start_consuming()
         except KeyboardInterrupt:
@@ -88,7 +90,7 @@ class WorkerChannel(ChannelHandler):
             return True
 
     def bind_callback(self, message):
-        if self._on_message_callback and not callable(self._on_message_callback):
+        if not is_callable(self._on_message_callback):
             LOGGER.info('Wrong callback is binded')
             raise CallBackError('The callback is not callable')
 

@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 import cups
 import os
 from multiprocessing import Process
-
+queues = ['colissimo']
 queues = os.environ.get("QUEUE_NAMES").split(',')
 user =  os.environ.get("RABBITMQ_USER")
 password =  os.environ.get("RABBITMQ_PASSWORD")
@@ -15,10 +15,10 @@ host =  os.environ.get("RABBITMQ_HOST")
 port =  os.environ.get("RABBITMQ_PORT")
 path =  os.environ.get("RABBITMQ_PATH")
 https = os.environ.get("HTTPS")
-exchange_name =  os.environ.get("RABBITMQ_EXCHANGE_NAME")
-delivery_mode =  os.environ.get("RABBITMQ_DELIVERY_MODE")
-logfile =  os.environ.get("FILELOG")
-log_level =  os.environ.get("LOG_LEVEL")
+exchange_name =  os.environ.get("RABBITMQ_EXCHANGE_NAME") or ''
+delivery_mode =  os.environ.get("RABBITMQ_DELIVERY_MODE") or 2
+logfile =  os.environ.get("FILELOG") or '/tmp/odoo.log'
+log_level =  os.environ.get("LOG_LEVEL") or 'INFO'
 printer_name = os.environ.get("PRINTER_NAME")
 
 rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/%{path}'.format(
@@ -30,6 +30,7 @@ rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/%{path}'.format(
     path=path,
 )
 
+rabbitmq_url = 'amqp://zzjkzkee:lDtW8VuBUEUiSTFc-oA09DFctJ3j971u@clam.rmq.cloudamqp.com/zzjkzkee'
 logger = logging.getLogger()
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
 # ACTIVITY
@@ -71,8 +72,10 @@ def start(queue):
     broker.start(queue)
 
 def main():
-    for quene in queues:
-        Process(target=start, args=(quene,)).start()
+    start('colissimo')
+
+    # for quene in queues:
+    #     Process(target=start, args=(quene,)).start()
 
 
 if __name__ == '__main__':
