@@ -5,6 +5,10 @@ python3.5 \
 whois \
 wget \
 lynx \
+cups-filters \
+foomatic-db-compressed-ppds \
+printer-driver-all \
+openprinting-ppds \
 python3-pip \
 build-essential \
 libssl-dev libffi-dev \
@@ -21,7 +25,9 @@ printer-driver-all \
 foomatic-db-compressed-ppds \
 openprinting-ppds \
 gutenprint-locales \
-python-nmap
+python-nmap \
+cups-client \
+vim
 
 COPY ./broker_rabbit /tmp/broker_rabbit
 RUN pip3 install /tmp/broker_rabbit

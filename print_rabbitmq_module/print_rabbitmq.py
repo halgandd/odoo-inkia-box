@@ -18,7 +18,7 @@ path =  os.environ.get("RABBITMQ_PATH")
 https = os.environ.get("HTTPS")
 exchange_name =  os.environ.get("RABBITMQ_EXCHANGE_NAME") or ''
 delivery_mode =  os.environ.get("RABBITMQ_DELIVERY_MODE") or 2
-logfile =  os.environ.get("FILELOG") or '/tmp/odoo.log'
+logfile =  os.environ.get("FILELOG")
 log_level =  os.environ.get("LOG_LEVEL") or 'INFO'
 printer_name = os.environ.get("PRINTER_NAME")
 
