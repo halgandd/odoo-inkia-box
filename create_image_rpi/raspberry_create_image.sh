@@ -3,8 +3,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 # set -o xtrace
-USERNAME=ahilali
-PASSWORD=066613296
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root"
    exit 1
