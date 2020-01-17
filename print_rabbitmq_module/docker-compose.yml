@@ -24,8 +24,7 @@ services:
       privileged: true
       devices:
           - /dev:/dev
-      links:
-        - cups
+      network_mode : host
 
   cups:
       image: lemariva/rpi-cups
