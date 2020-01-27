@@ -1,0 +1,26 @@
+image: docker:stable
+services:
+ - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  GIT_SUBMODULE_STRATEGY: recursive
+
+
+before_script:
+  - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" --password-stdin
+
+stages:
+  - Build print_rabbitmq
+
+
+docker build:
+  stage: Build print_rabbitmq
+  only:
+    - print_rabbitmq_hypriot
+    - 12.0_recette
+    - 12.0_prod
+  script:
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -f ./print_rabbitmq_module/Dockerfile .
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
+
