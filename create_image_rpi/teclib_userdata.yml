@@ -36,7 +36,7 @@ users:
     chpasswd: { expire: false }
 
 package_update: true
-package_upgrade: true
+#package_upgrade: true
 package_reboot_if_required: true
 
 locale: "fr_FR.UTF-8"
@@ -64,4 +64,8 @@ runcmd:
   - [mkdir, "-p", "/home/pi/teclib" ]
 
 
-
+power_state:
+ delay: "now"
+ mode: reboot
+ message: Rebbot to finish install...
+ condition: True
