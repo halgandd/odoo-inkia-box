@@ -21,7 +21,6 @@ locales \
 sudo \
 whois \
 cups \
-printer-driver-all \
 foomatic-db-compressed-ppds \
 openprinting-ppds \
 gutenprint-locales \
@@ -29,11 +28,13 @@ python-nmap \
 cups-client \
 vim
 
+COPY requirements.txt /tmp/
+RUN pip3 install -r /tmp/requirements.txt
+
 COPY ./broker_rabbit /tmp/broker_rabbit
 RUN pip3 install /tmp/broker_rabbit
 
-COPY requirements.txt /tmp/
-RUN pip3 install -r /tmp/requirements.txt
+
 #
 #COPY ./print_rabbitmq.sh /etc/init.d/print_rabbitmq
 #RUN chmod 755 /etc/init.d/print_rabbitmq
