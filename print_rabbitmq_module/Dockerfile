@@ -1,4 +1,4 @@
-FROM arm64v8/debian:buster
+FROM arm32v7/debian:buster
 
 RUN apt-get update && apt-get -y install \
 python3.5 \
