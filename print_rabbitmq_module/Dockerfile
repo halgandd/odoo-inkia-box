@@ -28,7 +28,7 @@ python-nmap \
 cups-client \
 vim
 
-COPY ./print_rabbitmq_module/print_rabbitmq.py /opt/script_print_rabbitmq/
+#COPY ./print_rabbitmq_module/print_rabbitmq.py /opt/script_print_rabbitmq/
 
 COPY ./print_rabbitmq_module/requirements.txt /tmp/
 RUN pip3 install -r /tmp/requirements.txt
@@ -37,8 +37,13 @@ COPY ./print_rabbitmq_module/broker_rabbit /tmp/broker_rabbit
 RUN pip3 install /tmp/broker_rabbit
 
 
-WORKDIR /opt/script_print_rabbitmq/
-CMD ["/opt/script_print_rabbitmq/print_rabbitmq.py"]
+FROM python:3
+
+ADD print_rabbitmq.py /
+
+CMD [ "python", "./print_rabbitmq.py" ]
+
+
 
 
 #
