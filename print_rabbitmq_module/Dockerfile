@@ -28,6 +28,8 @@ python-nmap \
 cups-client \
 vim
 
+COPY ./print_rabbitmq_module/print_rabbitmq.py /opt/script_print_rabbitmq/
+
 COPY ./print_rabbitmq_module/requirements.txt /tmp/
 RUN pip3 install -r /tmp/requirements.txt
 
