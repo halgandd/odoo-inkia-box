@@ -1,0 +1,61 @@
+#cloud-config
+
+hostname: inkia_printer
+manage_etc_hosts: true
+apt_preserve_sources_list: true
+
+users:
+  - name: inkia
+    gecos: "Inkia Printer"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: users,docker,video
+    plain_text_passwd: inkia
+    lock_passwd: false
+    ssh_pwauth: true
+    chpasswd: { expire: false }
+
+  - name: pi
+    gecos: "Raspberry Pi"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: users,docker,video
+    plain_text_passwd: raspberry
+    lock_passwd: false
+    ssh_pwauth: true
+    chpasswd: { expire: false }
+
+  - name: pirate
+    gecos: "Hypriot Pirate"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: users,docker,video
+    plain_text_passwd: hypriot
+    lock_passwd: false
+    ssh_pwauth: true
+    chpasswd: { expire: false }
+
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+
+locale: "fr_FR.UTF-8"
+
+timezone: "Europe/Paris"
+
+write_files:
+  - content: |
+              cd /home/pi/print_rabbitmq_module
+              docker-compose up
+              cd /home/pi/flask_rpi
+              docker-compose up
+    path: "/home/pi/init_inkia.sh"
+    owner: "root:root"
+
+# These commands will be ran once on first boot only
+runcmd:
+  - [mkdir, "-p", "/home/pi" ]
+  - [mkdir, "-p", "/home/pi/teclib" ]
+
+
+
