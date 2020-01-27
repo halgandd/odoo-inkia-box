@@ -1,4 +1,4 @@
-FROM arm32v7/debian:buster
+FROM debian:buster
 
 RUN apt-get update && apt-get -y install \
 python3.5 \
@@ -38,7 +38,7 @@ RUN pip3 install /tmp/broker_rabbit
 
 WORKDIR /opt/print_rabbitmq_module/
 COPY ./print_rabbitmq_module/print_rabbitmq.py .
-CMD [ "python3", "/opt/print_rabbitmq_module/print_rabbitmq.py" ]
+CMD [ "/opt/print_rabbitmq_module/print_rabbitmq.py" ]
 
 
 
