@@ -19,8 +19,6 @@ services:
           QUEUE_CONFIGURATION : config_raspberry
           HTTPS : 1
       restart: always
-      working_dir: /opt/script_print_rabbitmq
-      command: ./print_rabbitmq.py
       privileged: true
       devices:
           - /dev:/dev
