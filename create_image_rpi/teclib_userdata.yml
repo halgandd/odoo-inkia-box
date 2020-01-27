@@ -45,11 +45,17 @@ timezone: "Europe/Paris"
 
 write_files:
   - content: |
-              cd /home/pi/print_rabbitmq_module
-              docker-compose up
-              cd /home/pi/flask_rpi
-              docker-compose up
-    path: "/home/pi/init_inkia.sh"
+              {
+                  "auths": {
+                      "gitlab.teclib-erp.com": {
+                          "auth": "bXBlcnJvY2hlYXU6TXBlMDIwOUAk"
+                      }
+                  },
+                  "HttpHeaders": {
+                      "User-Agent": "Docker-Client/19.03.5 (linux)"
+                  }
+              }
+    path: "/root/.docker/config.json"
     owner: "root:root"
 
 # These commands will be ran once on first boot only
