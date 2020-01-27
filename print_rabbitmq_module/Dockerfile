@@ -38,7 +38,7 @@ RUN pip3 install /tmp/broker_rabbit
 
 WORKDIR /opt/print_rabbitmq_module/
 COPY ./print_rabbitmq_module/print_rabbitmq.py .
-CMD [ "print_rabbitmq.py" ]
+CMD [ "python3", "/opt/print_rabbitmq_module/print_rabbitmq.py" ]
 
 
 
