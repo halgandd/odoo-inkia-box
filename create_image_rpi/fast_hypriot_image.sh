@@ -5,6 +5,29 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+helpFunction()
+{
+   echo ""
+   echo "Usage: $0 [-n]"
+   echo -e "\t-n Don't recreate dockers images"
+   echo -e "\t-h Help"
+   exit 1 # Exit script after printing help
+}
+
+NOCLEANUP=0
+GET_DOCKER_IMG=1
+while getopts "ndh?" opt
+do
+   case "$opt" in
+      n ) NOCLEANUP=1 ;;
+      d ) GET_DOCKER_IMG=0 ;;
+
+      h ) helpFunction ;;
+      ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
+   esac
+done
+
+
 file_exists() {
     [[ -f $1 ]];
 }
@@ -13,23 +36,7 @@ require_command () {
     type "$1" &> /dev/null || { echo "Command $1 is missing. Install it e.g. with 'apt-get install $1'. Aborting." >&2; exit 1; }
 }
 
-rawurlencode() {
-  local string="${1}"
-  local strlen=${#string}
-  local encoded=""
-  local pos c o
 
-  for (( pos=0 ; pos<strlen ; pos++ )); do
-     c=${string:$pos:1}
-     case "$c" in
-        [-_.~a-zA-Z0-9] ) o="${c}" ;;
-        * )               printf -v o '%%%02x' "'$c"
-     esac
-     encoded+="${o}"
-  done
-  echo "${encoded}"
-  REPLY="${encoded}"
-}
 
 require_command kpartx
 require_command qemu-system-arm
@@ -65,7 +72,10 @@ rm -f ./hypriot_teclib.img
 echo "Create HypriotOS Teclib Image..."
 pv *hypriotos*.img > ./hypriot_teclib.img
 
-
+if [ ${GET_DOCKER_IMG}  -eq 1 ] ; then
+  echo "Create Docker images from local docker..."
+  ./docker_save_images.sh
+fi
 
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -122,22 +132,8 @@ cp -f ./teclib_userdata.yml "${MOUNT_POINT_ROOT}/user-data"
 cp ./90-qemu.rules "${MOUNT_POINT}"/etc/udev/rules.d/
 echo "#/usr/lib/arm-linux-gnueabihf/libarmmem.so" > "${MOUNT_POINT}"/etc/ld.so.preload
 
-echo "############ Unmount Image ###############"
-#sleep 1
-#umount "${MOUNT_POINT_ROOT}"
-#sleep 1
-#mount -o remount,rw "${LOOP_MAPPER_BOOT}" "${MOUNT_POINT_ROOT}"
-#mount -o remount,rw "${LOOP_MAPPER_PATH}" "${MOUNT_POINT}"
-#umount "${MOUNT_POINT_ROOT}"
-#sleep 2
-#umount "${MOUNT_POINT}"
-#./unmount_hypriot_image.sh
-
 
 ./unmount_hypriot_image.sh
-#umount "${MOUNT_POINT_ROOT}"
-#sleep 1
-#umount "${MOUNT_POINT}"
 
 sleep 1
 kpartx -d hypriot_teclib.img
@@ -149,28 +145,9 @@ QEMU_OPTS=(-kernel kernel-qemu -cpu arm1176 -m 256 -M versatilepb -dtb versatile
 echo "Starting Qemu..."
 qemu-system-arm "${QEMU_OPTS[@]}" | tee ./qemu.log
 
-#flash --hostname inkia.teclib.local --userdata ./teclib_userdata.yml ./hypriot_teclib.img
 
-#kpartx -avs hypriot_teclib.img
 e2fsck -f "${LOOP_MAPPER_PATH}" # resize2fs requires clean fs
-#resize2fs "${LOOP_MAPPER_PATH}"
 
-#mount "${LOOP_MAPPER_PATH}" "${MOUNT_POINT}"
-#mount "${LOOP_MAPPER_BOOT}" "${MOUNT_POINT_ROOT}"
-#
-#sleep 2
-#
-#umount "${MOUNT_POINT_ROOT}"
-#sleep 1
-#umount "${MOUNT_POINT}"
-#sleep 1
-
-#umount "${MOUNT_POINT_ROOT}"
-#sleep 1
-#sudo mount -o rw,remount -force "${LOOP_MAPPER_BOOT}" "${MOUNT_POINT_ROOT}"
-#umount "${MOUNT_POINT_ROOT}"
-#sleep 1
-#umount "${MOUNT_POINT}"
 
 kpartx -d hypriot_teclib.img
 

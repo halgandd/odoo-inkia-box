@@ -10,24 +10,27 @@ To prepare the docker directory:
     * ./docker_save_images.sh
     
     
-To execute some cmd on image before real boot, edit the ./init_static_hypriot.sh
-For example,
-
-    apt-get update
-will same time.
-
 To configure the raspeberry initialization, file the teclib_userdata.yml
 You can set users and files to create on startup.
+docker-compose files are set in teclib_userdata.yml
 
 ./sudo ./fast_hypriot_image.sh
 
+Then flash the hypriot_teclib.img image on SD card.
 
-    ./sudo ./fast_hypriot_image_static.sh
+
 
 # A fastest script (dev in progress)
 
     ./sudo ./fast_hypriot_image_static.sh
     ./sudo ./fast_hypriot_image_static.sh -n -e
+
+To execute some cmd on image before real boot, edit the ./init_static_hypriot.sh
+For example,
+
+    apt-get update
+will save time.
+
 
 
 # After first boot
@@ -37,6 +40,10 @@ To load docker images:
     cd ./home/pi
     sudo ./init_hypriot_docker.sh 
 
+(This services should be start at boot)
+
+    sudo /etc/init.d/run_teclib_docker
+    sudo /etc/init.d/run_teclib_docker
 
 
 ## Build ARM Docker image
@@ -67,6 +74,8 @@ To build ARM images:
 Portainer: http://172.28.215.139:9000
 
 Cups: http://172.28.215.139:631/
+login: print
+password: print
 
 Flask: http://172.28.215.139:8050/
 
