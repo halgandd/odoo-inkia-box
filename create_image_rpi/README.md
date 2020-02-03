@@ -50,11 +50,11 @@ To load docker images:
 
 In odoo-box, to install docker 19.3ARM buildx
 
-    build_docker_arm.sh -i
+    sudo build_docker_arm.sh -i
 
 To build ARM images:
 
-    /odoo-box/build_docker_arm.sh 
+    sudo /odoo-box/build_docker_arm.sh 
 
 
 
@@ -74,8 +74,10 @@ To build ARM images:
 Portainer: http://172.28.215.139:9000
 
 Cups: http://172.28.215.139:631/
-login: print
-password: print
+
+    Cups:
+    login: print
+    password: print
 
 Flask: http://172.28.215.139:8050/
 
