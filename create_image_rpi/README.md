@@ -42,6 +42,24 @@ To build ARM images:
 
 
 
+# to connect to raspberry:
+    ssh pirate@172.28.215.139    
+    password : hypriot
+
+# To Create a config.json (for docker login)
+    sudo docker login registry.teclib-erp.com
+
+# Install Portainer
+    sudo docker pull hypriot/rpi-portainer
+    sudo docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock hypriot/rpi-portainer
+
+# Web access:
+Portainer: http://172.28.215.139:9000
+Cups: http://172.28.215.139:631/
+Flask: http://172.28.215.139:8050/
+
+
+
 
 
 

@@ -15,7 +15,7 @@ file_exists() {
 }
 
 docker_load() {
-  if file_exists "${IMG_TAR}" ; then
+  if file_exists "${1}" ; then
     docker load -i "${1}"
     rm "${1}"
   fi
