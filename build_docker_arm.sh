@@ -20,14 +20,14 @@ INSTALL=0
 while getopts "ih?" opt
 do
    case "$opt" in
-      n ) INSTALL=1 ;;
+      i ) INSTALL=1 ;;
       h ) helpFunction ;;
       ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
    esac
 done
 
 
-if [ ${NOCLEANUP}  -eq 0 ] ; then
+if [ ${INSTALL}  -eq 1 ] ; then
   echo "#### Install Docker 19.3 ####"
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic test"
@@ -35,12 +35,17 @@ if [ ${NOCLEANUP}  -eq 0 ] ; then
   sudo curl -fsSL https://test.docker.com -o test-docker.sh
   sudo sh test-docker.sh
   sudo apt-get install qemu-user
-  usermod -a -G docker mperrocheau
 
-  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-  docker buildx create --name armbuilder --use
-  docker buildx inspect --bootstrap
+
+
 fi
+
+docker buildx rm armbuilder
+usermod -a -G docker mperrocheau
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker buildx create --name armbuilder --use
+docker buildx inspect --bootstrap
+
 
 #docker login
 
