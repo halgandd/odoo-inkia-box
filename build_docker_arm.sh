@@ -35,15 +35,17 @@ if [ ${INSTALL}  -eq 1 ] ; then
   sudo curl -fsSL https://test.docker.com -o test-docker.sh
   sudo sh test-docker.sh
   sudo apt-get install qemu-user
-
+  docker buildx rm armbuilder
+  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  docker buildx create --name armbuilder --use
 
 
 fi
 
-docker buildx rm armbuilder
+
 usermod -a -G docker mperrocheau
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-docker buildx create --name armbuilder --use
+docker buildx use armbuilder
 docker buildx inspect --bootstrap
 
 
