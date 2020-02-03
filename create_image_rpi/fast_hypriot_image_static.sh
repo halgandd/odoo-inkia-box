@@ -70,17 +70,6 @@ if [ ${NOCLEANUP}  -eq 0 ] ; then
 fi
 
 
-__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MOUNT_POINT="${__dir}/root_mount"
-MOUNT_POINT_BOOT="${MOUNT_POINT}/boot"
-LOOP=$(kpartx -avs hypriot_teclib.img)
-LOOP_MAPPER_PATH=$(echo "${LOOP}" | tail -n 1 | awk '{print $3}')
-LOOP_PATH="/dev/${LOOP_MAPPER_PATH::-2}"
-LOOP_MAPPER_PATH="/dev/mapper/${LOOP_MAPPER_PATH}"
-LOOP_MAPPER_BOOT=$(echo "${LOOP}" | tail -n 2 | awk 'NR==1 {print $3}')
-LOOP_MAPPER_BOOT="/dev/mapper/${LOOP_MAPPER_BOOT}"
-echo "${LOOP_MAPPER_PATH}" "${LOOP_MAPPER_BOOT}"
-
 if [ ${NOCLEANUP}  -eq 0 ] ; then
     echo "Enlarging the image..."
     dd if=/dev/zero bs=1M count=3000 status=progress >> hypriot_teclib.img
@@ -99,11 +88,22 @@ echo '';                           #   ending at default (fdisk should propose m
 echo 'p';                          # print
 echo 'w'; echo 'n') | fdisk hypriot_teclib.img       # write and quit
 
-kpartx -u "${LOOP_MAPPER_PATH}"
 
 e2fsck -fv "${LOOP_MAPPER_PATH}" # resize2fs requires clean fs
 resize2fs "${LOOP_MAPPER_PATH}"
-kpartx -u "${LOOP_MAPPER_PATH}"
+
+
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MOUNT_POINT="${__dir}/root_mount"
+MOUNT_POINT_BOOT="${MOUNT_POINT}/boot"
+LOOP=$(kpartx -avs hypriot_teclib.img)
+LOOP_MAPPER_PATH=$(echo "${LOOP}" | tail -n 1 | awk '{print $3}')
+LOOP_PATH="/dev/${LOOP_MAPPER_PATH::-2}"
+LOOP_MAPPER_PATH="/dev/mapper/${LOOP_MAPPER_PATH}"
+LOOP_MAPPER_BOOT=$(echo "${LOOP}" | tail -n 2 | awk 'NR==1 {print $3}')
+LOOP_MAPPER_BOOT="/dev/mapper/${LOOP_MAPPER_BOOT}"
+echo "${LOOP_MAPPER_PATH}" "${LOOP_MAPPER_BOOT}"
+
 
 
 # mkfs.ext4 -Fv "${LOOP_MAPPER_BOOT}" # format /boot file sytstem
@@ -116,6 +116,8 @@ rm -R "${MOUNT_POINT_BOOT}"
 mkdir "${MOUNT_POINT_BOOT}"
 mount -v "${LOOP_MAPPER_PATH}" "${MOUNT_POINT}"
 mount -v "${LOOP_MAPPER_BOOT}" "${MOUNT_POINT_BOOT}"
+
+
 echo "MOUNT IMAGE..."
 #resize2fs "${LOOP_MAPPER_PATH}"
 # resize2fs "${LOOP_MAPPER_BOOT}"

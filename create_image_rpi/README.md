@@ -19,14 +19,23 @@ will same time.
 To configure the raspeberry initialization, file the teclib_userdata.yml
 You can set users and files to create on startup.
 
+./sudo ./fast_hypriot_image.sh
 
 
+    ./sudo ./fast_hypriot_image_static.sh
+
+# A fastest script (dev in progress)
 
     ./sudo ./fast_hypriot_image_static.sh
     ./sudo ./fast_hypriot_image_static.sh -n -e
 
 
+# After first boot
 
+To load docker images:
+
+    cd ./home/pi
+    sudo ./init_hypriot_docker.sh 
 
 
 
@@ -38,7 +47,7 @@ In odoo-box, to install docker 19.3ARM buildx
 
 To build ARM images:
 
-    build_docker_arm.sh 
+    /odoo-box/build_docker_arm.sh 
 
 
 
@@ -54,8 +63,11 @@ To build ARM images:
     sudo docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock hypriot/rpi-portainer
 
 # Web access:
+
 Portainer: http://172.28.215.139:9000
+
 Cups: http://172.28.215.139:631/
+
 Flask: http://172.28.215.139:8050/
 
 
