@@ -56,13 +56,17 @@ To build ARM images:
 
     sudo /odoo-box/build_docker_arm.sh 
 
+Created images are pushed in :
+
+https://gitlab.teclib-erp.com/teclib/odoo-box/container_registry
 
 
-# to connect to raspberry:
+# To connect to raspberry
     ssh pirate@172.28.215.139    
     password : hypriot
 
-# To Create a config.json (for docker login)
+# To Create a config.json 
+(for docker login)
     sudo docker login registry.teclib-erp.com
 
 # Install Portainer
