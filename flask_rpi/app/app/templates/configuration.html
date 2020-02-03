@@ -15,21 +15,102 @@
                     <input name='redirect_to' type='hidden' value='confirmation.html'/>
                     <div class="row">
                         <div class="col">
-                            <input class="form-control" name="raspberry_name" placeholder="Nom de raspberry" type="text">
+                            <label>Raspberry Name</label>
+                            <input class="form-control" name="raspberry_name" value="{{ raspberry_name }}" placeholder="RaspberryName" type="text">
                         </div>
                     </div>
 
                     <div class="row mt-4">
                         <div class="col">
-                            <input class="form-control" name="cups_login" placeholder="Cups login" type="text">
+                            <label>Cups Printer</label>
+                            <input class="form-control" name="cups_printer" value="{{ cups_printer }}" placeholder="Cups Printer" type="text">
                         </div>
                     </div>
 
                     <div class="row mt-4">
                         <div class="col">
-                            <input class="form-control" name="cups_password" placeholder="Cups password" type="tel">
+                            <label>Cups Login</label>
+                            <input class="form-control" name="cups_login" value="{{ cups_login }}" placeholder="Cups Login" type="text">
                         </div>
                     </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>Cups Password</label>
+                            <input class="form-control" name="cups_password" value="{{ cups_password }}" placeholder="Cups Password" type="password">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ User</label>
+                            <input class="form-control" name="rabbitmq_user" value="{{ rabbitmq_user }}" placeholder="RabbitMQ User" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ Password</label>
+                            <input class="form-control" name="rabbitmq_password" value="{{ rabbitmq_password }}" placeholder="RabbitMQ Password" type="password">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ Host</label>
+                            <input class="form-control" name="rabbitmq_host" value="{{ rabbitmq_host }}" placeholder="RabbitMQ Host" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ Port</label>
+                            <input class="form-control" name="rabbitmq_port" value="{{ rabbitmq_port }}" placeholder="RabbitMQ Port" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ Path</label>
+                            <input class="form-control" name="rabbitmq_path" value="{{ rabbitmq_path }}" placeholder="RabbitMQ Path" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ Queue Names</label>
+                            <input class="form-control" name="queue_names" value="{{ queue_names }}" placeholder="queue1,queue2,queue3" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ Queue Configuration</label>
+                            <input class="form-control" name="queue_configuration" value="{{ queue_configuration }}" placeholder="RabbitMQ Queue Configuration" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ Exchange Name</label>
+                            <input class="form-control" name="rabbitmq_exchange" value="{{ rabbitmq_exchange }}" placeholder="RabbitMQ Exchange Name" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ Delivery Mode</label>
+                            <input class="form-control" name="rabbitmq_delivery_mode" value="{{ rabbitmq_delivery_mode }}" placeholder="RabbitMQ Delivery Mode" type="text">
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <label>RabbitMQ HTTPS</label>
+                            <input class="form-control" name="rabbitmq_https" value="{{ rabbitmq_https }}" placeholder="RabbitMQ HTTPS" type="text">
+                        </div>
+                    </div>
+
                     <div class="row mt-4">
                         <div class="col">
                             <button class="btn btn-primary" type="submit">Envoyer</button>
