@@ -17,7 +17,7 @@ services:
           LOG_LEVEL : INFO
           QUEUE_NAMES : colissimo,manual,chronopost
           QUEUE_CONFIGURATION : config_raspberry
-          HTTPS : 1
+          RABBITMQ_HTTPS : 1
       restart: always
       privileged: true
       devices:

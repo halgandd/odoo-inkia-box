@@ -1,7 +1,6 @@
-FROM debian:buster
+FROM python:3.7-buster
 
 RUN apt-get update && apt-get -y install \
-python3.5 \
 whois \
 wget \
 lynx \
@@ -9,14 +8,12 @@ cups-filters \
 foomatic-db-compressed-ppds \
 printer-driver-all \
 openprinting-ppds \
-python3-pip \
 build-essential \
 libssl-dev libffi-dev \
 libxml2-dev \
 libxslt1-dev \
 zlib1g-dev \
 libcups2-dev \
-python3.7-dev \
 locales \
 sudo \
 whois \
@@ -38,6 +35,9 @@ RUN pip3 install /tmp/broker_rabbit
 
 
 COPY ./print_rabbitmq_module/print_rabbitmq.py /opt/script_print_rabbitmq/
+
+EXPOSE 631
+EXPOSE 5672
 
 WORKDIR /opt/script_print_rabbitmq/
 CMD [ "/opt/script_print_rabbitmq/print_rabbitmq.py" ]

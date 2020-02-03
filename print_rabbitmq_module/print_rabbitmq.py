@@ -9,13 +9,14 @@ import os
 import json
 from functools import partial
 import threading, time
+
 queues = os.environ.get("QUEUE_NAMES").split(',')
 user =  os.environ.get("RABBITMQ_USER")
 password =  os.environ.get("RABBITMQ_PASSWORD")
 host =  os.environ.get("RABBITMQ_HOST")
 port =  os.environ.get("RABBITMQ_PORT")
 path =  os.environ.get("RABBITMQ_PATH")
-https = os.environ.get("HTTPS")
+https = os.environ.get("RABBITMQ_HTTPS")
 exchange_name =  os.environ.get("RABBITMQ_EXCHANGE_NAME") or ''
 delivery_mode =  os.environ.get("RABBITMQ_DELIVERY_MODE") or 2
 logfile =  os.environ.get("FILELOG")
@@ -23,7 +24,7 @@ log_level =  os.environ.get("LOG_LEVEL") or 'INFO'
 printer_name = os.environ.get("PRINTER_NAME")
 
 rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/%{path}'.format(
-    https=eval(https) and 's' or '',
+    https=bool(int(https)) and 's' or '',
     user=user,
     password=password,
     host=host,
@@ -73,6 +74,7 @@ def callback(ch, method, properties, body):
 def run():
     for queue in queues:
         params = pika.URLParameters(rabbitmq_url)
+        logger.info("RabbitMQ Params : %s", str(params))
         connection = pika.BlockingConnection(params)
         logger.info("start consuming %s" %(queue))
         channel = connection.channel()
