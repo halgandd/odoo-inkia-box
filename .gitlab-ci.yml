@@ -21,6 +21,9 @@ docker build config:
   variables:
     DOCKER_CLI_EXPERIMENTAL: "enabled"
   script:
+    - mkdir -p $HOME/.docker
+    - "echo -e '{\n  \"experimental\": \"enabled\"\n}' | tee $HOME/.docker/config.json"
+    - cat "$HOME/.docker/config.json"
     - export DOCKER_CLI_EXPERIMENTAL=enabled
     - export DOCKER_BUILDKIT=1
     - docker build --platform=local -o . git://github.com/docker/buildx
