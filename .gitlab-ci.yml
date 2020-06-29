@@ -5,7 +5,7 @@ services:
 
 variables:
   DOCKER_DRIVER: overlay2
-  DOCKER_CLI_EXPERIMENTAL: "enabled"
+
 
 before_script:
   - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" --password-stdin
@@ -13,29 +13,17 @@ before_script:
 stages:
   - Build config
   - Build printer
+  - Build cups
 
 docker build config:
   stage: Build config
   only:
     - v2
-  variables:
-    DOCKER_CLI_EXPERIMENTAL: "enabled"
   script:
-    - mkdir -p $HOME/.docker
-    - "echo -e '{\n  \"experimental\": \"enabled\"\n}' | tee $HOME/.docker/config.json"
-    - cat "$HOME/.docker/config.json"
-    - export DOCKER_CLI_EXPERIMENTAL=enabled
-    - export DOCKER_BUILDKIT=1
-    - docker build --platform=local -o . git://github.com/docker/buildx
-    - mkdir -p ~/.docker/cli-plugins
-    - mv buildx ~/.docker/cli-plugins/docker-buildx
-    - docker run --rm --privileged docker/binfmt:820fdd95a9972a5308930a2bdfb8573dd4447ad3
-    - docker buildx create --name armbuilder --use
-    - docker buildx inspect --bootstrap
     - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config ./config
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config
-#    - docker buildx  --platform "linux/arm/v7" -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config_arm32v7 ./config
-#    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config_arm32v7
+#    - docker buildx  --platform "linux/arm/v7" -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config_arm7 ./config
+#    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config_arm7
 
 docker build printer:
   stage: Build printer
@@ -44,7 +32,16 @@ docker build printer:
   script:
     - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer ./printer
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer
-#    - docker buildx  --platform "linux/arm/v7" -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm32v7 ./printer
-#    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm32v7
+#    - docker buildx  --platform "linux/arm/v7" -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm7 ./printer
+#    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm7
 
+docker build cups:
+  stage: Build cups
+  only:
+    - v2
+  script:
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:cups ./cups
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:cups
+#    - docker buildx  --platform "linux/arm/v7" -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm7 ./printer
+#    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm7
 
