@@ -19,7 +19,7 @@ docker build config:
   only:
     - v2
   script:
-    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config -f ./config/Dockerfile ./config
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config ./config
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config
 
 docker build printer:
@@ -27,7 +27,7 @@ docker build printer:
   only:
     - v2
   script:
-    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer -f ./printer/Dockerfile ./printer
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer -f ./printer
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer
 
 
