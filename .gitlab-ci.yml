@@ -17,6 +17,9 @@ stages:
 
 buildx:
   image: docker:git
+  services:
+    - name: docker:dind
+      command: ["--experimental"]
   stage: buildx
   variables:
     GIT_STRATEGY: none
