@@ -28,7 +28,6 @@ services:
       - 8091:631
     volumes:
       - /var/run/dbus:/var/run/dbus # usb
-      - ./config/cupsd.conf:/etc/cups/cupsd.conf:z # cups configuration
       - odoo_box_cups_data_dev:/etc/cups/ # for save regitered printers
       - /tmp/print:/tmp/printed # share pdf to print
     devices:

@@ -1,12 +1,37 @@
 version: '3.6'
 services:
-  odoo-box-printer:
-    container_name: odoo-box-printer
-    build: .
+  odoo-box-config:
+    container_name: odoo-box-config
+    image: registry.teclib-erp.com/teclib/odoo-box:config
+    ports:
+      - 8090:5000
     privileged: true
     restart: always
     volumes:
-      - .:/opt/script_print_rabbitmq
+      - /var/run.docker.sock:/var/run/docker.sock
+      - ~/.odoo-box.env:/opt/env.dev
+      - ./app:/app
+    env_file:
+        - ~/.odoo-box.env
+    environment:
+      UDEV : 1
+      PATH_ENV_FILE : /opt/env.dev
+      FLASK_DEBUG: 1
+      FLASK_ENV: development
+      CUPS_HOST: cups
+      CUPS_USER: print
+      CUPS_PASSWORD: print
+    devices:
+      - /dev:/dev
+    external_links:
+      - odoo-box-cups:cups
+
+  odoo-box-printer:
+    container_name: odoo-box-printer
+    image: registry.teclib-erp.com/teclib/odoo-box:printer
+    privileged: true
+    restart: always
+    volumes:
       - /tmp/print:/tmp/printed
     env_file:
         - ~/.odoo-box.env
@@ -23,7 +48,7 @@ services:
 
   odoo-box-cups:
     container_name: odoo-box-cups
-    build: ../cups
+    image: registry.teclib-erp.com/teclib/odoo-box:cups_arm7
     privileged: true
     ports:
       - 8091:631
@@ -40,5 +65,4 @@ volumes:
 
 networks:
   default:
-    external:
-      name: dev_teclib
+      driver: bridge

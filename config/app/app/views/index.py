@@ -69,8 +69,9 @@ def index():
             cups.setPasswordCB(lambda a: os.environ.get("CUPS_PASSWORD"))
             conn = cups.Connection()
             devices = conn.getPrinters()
-        except:
-            app.logger.info("Cups error")
+        except Exception as e:
+            app.logger.error("Cups error %s" % (e))
+
         return devices
 
     def get_network_devices():

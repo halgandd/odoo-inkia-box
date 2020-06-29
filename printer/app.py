@@ -71,6 +71,7 @@ def process_message(body):
         conn = cups.Connection()
         logger.info("Send Data %s to printer %s" % (report_name, printer_name))
         conn.printFile(printer_name, os.path.abspath(report_name), "Python_Status_print", {})
+        logger.info("Printing %s %s" % (report_name, printer_name))
         os.remove(report_name)
         sleep(2)
 
