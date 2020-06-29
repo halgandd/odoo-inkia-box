@@ -104,7 +104,7 @@ write_files:
               services:
                 website:
                   container_name: raspberry-flask-website
-                  image: registry.teclib-erp.com/teclib/odoo-box:flask_rpi_arm7
+                  image: registry.teclib-erp.com/teclib/odoo-box:configuration_arm7
                   ports:
                     - 8050:5000
                   labels:
@@ -117,7 +117,6 @@ write_files:
                     - /opt/file_env/:/opt/file_env/:z
                   environment:
                     UDEV : 1
-                    MAC_ADDRESS: 6e:0c:2e:7c:60:bd
                     PATH_ENV_FILE : /opt/file_env/
                   env_file:
                     - /opt/file_env/file.env
@@ -128,7 +127,7 @@ write_files:
                     driver: bridge
 
 
-    path: "/home/pi/docker-compose-flask_rpi.yml"
+    path: "/home/pi/docker-compose-configuration.yml"
     owner: "root:root"
 
 
@@ -147,7 +146,7 @@ write_files:
 
       /home/pi/init_hypriot_docker.sh
       docker login registry.teclib-erp.com
-      docker pull registry.teclib-erp.com/teclib/odoo-box:flask_rpi_arm7
+      docker pull registry.teclib-erp.com/teclib/odoo-box:configuration_arm7
       docker pull registry.teclib-erp.com/teclib/odoo-box:arm7
       docker pull lemariva/rpi-cups
 
@@ -169,7 +168,7 @@ write_files:
       #                    /root/.docker/config.json must be set.
       ### END INIT INFO
 
-      docker-compose -f /home/pi/docker-compose-flask_rpi.yml up -d
+      docker-compose -f /home/pi/docker-compose-configuration.yml up -d
       docker-compose -f /home/pi/docker-compose-print_rabbitmq.yml up -d
 
     path: "/etc/init.d/run_teclib_docker"
@@ -198,11 +197,7 @@ write_files:
 
 
   - content: |
-      RASPBERRY_NAME=inkiaprinter
-      CUPS_PASSWORD=password
-      CUPS_LOGIN=root
       QUEUE_NAMES=colissimo,manual,chronopost
-      QUEUE_CONFIGURATION=config_raspberry
       RABBITMQ_USER=admin
       RABBITMQ_PASSWORD=IWmnh7hqWczlk
       RABBITMQ_HOST=service.rabbitmq.recette-erp12.interne.inkia.fr

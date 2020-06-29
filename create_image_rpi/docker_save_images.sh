@@ -32,12 +32,12 @@ if [ ${VERBOSE} -eq 1 ] ; then
   echo "########### Docker Save Files #################"
 fi
 
-docker pull registry.teclib-erp.com/teclib/odoo-box:flask_rpi_arm7
+docker pull registry.teclib-erp.com/teclib/odoo-box:configuration_arm7
 docker pull registry.teclib-erp.com/teclib/odoo-box:arm7
 docker pull lemariva/rpi-cups
 
 mkdir -p ./docker
-docker save -o ./docker/flask_rpi_arm7.tar registry.teclib-erp.com/teclib/odoo-box:flask_rpi_arm7
+docker save -o ./docker/configuration_arm7.tar registry.teclib-erp.com/teclib/odoo-box:configuration_arm7
 docker save -o ./docker/arm7.tar registry.teclib-erp.com/teclib/odoo-box:arm7
 docker save -o ./docker/rpi-cups.tar lemariva/rpi-cups
 

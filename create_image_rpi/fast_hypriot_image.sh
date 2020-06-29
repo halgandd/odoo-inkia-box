@@ -125,7 +125,7 @@ mkdir -p "${MOUNT_POINT}"/home/pi
 mkdir -p "${MOUNT_POINT}"/home/pi/docker
 cp ./init_hypriot_docker.sh "${MOUNT_POINT}"/home/pi/
 cp ./docker/*.tar "${MOUNT_POINT}"/home/pi/docker/
-cp -r ../print_rabbitmq_module/config "${MOUNT_POINT}"/home/pi/
+cp -r ../printer/config "${MOUNT_POINT}"/home/pi/
 cp -f ./teclib_userdata.yml "${MOUNT_POINT_ROOT}/user-data"
 
 #For Qemu

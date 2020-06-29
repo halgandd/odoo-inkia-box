@@ -22,5 +22,5 @@ docker_load() {
 }
 
 docker_load "/home/pi/docker/arm7.tar"
-docker_load "/home/pi/docker/flask_rpi_arm7.tar"
+docker_load "/home/pi/docker/configuration_arm7.tar"
 docker_load "/home/pi/docker/rpi-cups.tar"

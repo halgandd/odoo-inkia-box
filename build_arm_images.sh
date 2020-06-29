@@ -83,7 +83,7 @@ docker buildx inspect --bootstrap
 #
 #
 
-docker buildx build --platform "linux/arm/v7" -f ./printer/Dockerfile_arm  --push -t registry.teclib-erp.com/teclib/odoo-box:arm7 .
-docker buildx build --platform "linux/arm/v7" -f ./config/Dockerfile_arm  --push -t registry.teclib-erp.com/teclib/odoo-box:config_arm7 .
+docker buildx build --platform "linux/arm/v7" -f ./printer/Dockerfile  --push -t registry.teclib-erp.com/teclib/odoo-box:printer_arm7 .
+docker buildx build --platform "linux/arm/v7" -f ./config/Dockerfile  --push -t registry.teclib-erp.com/teclib/odoo-box:config_arm7 .
 
 

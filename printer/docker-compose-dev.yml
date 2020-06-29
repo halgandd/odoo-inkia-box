@@ -1,0 +1,45 @@
+version: '3.6'
+services:
+  odoo-box-printer:
+    container_name: odoo-box-printer
+    build: .
+    privileged: true
+    restart: always
+    volumes:
+      - .:/opt/script_print_rabbitmq
+      - /tmp/print:/tmp/printed
+    env_file:
+        - ~/.odoo-box.env
+    environment:
+        UDEV : 1
+        LOG_LEVEL : DEBUG
+        CUPS_HOST: cups
+        CUPS_USER: print
+        CUPS_PASSWORD: print
+    devices:
+      - /dev:/dev
+    external_links:
+      - odoo-box-cups:cups
+
+  odoo-box-cups:
+    container_name: odoo-box-cups
+    image: lemariva/rpi-cups
+    privileged: true
+    ports:
+      - 8091:631
+    volumes:
+      - /var/run/dbus:/var/run/dbus
+      - ./config/cupsd.conf:/etc/cups/cupsd.conf:z
+      - odoo_box_cups_data_dev:/etc/cups/ # for save regitered printers
+      - /tmp/print:/tmp/printed # share pdf to print
+    devices:
+        - /dev:/dev
+    restart: always
+
+volumes:
+  odoo_box_cups_data_dev:
+
+networks:
+  default:
+    external:
+      name: dev_teclib

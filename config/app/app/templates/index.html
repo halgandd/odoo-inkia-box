@@ -1,0 +1,198 @@
+{% extends "base/base.html" %}
+{%block content%}
+<!-- Contacts 10 -->
+<section class="fdb-block">
+    <div class="container">
+        <div class="row text-center justify-content-center">
+            <div class="col-12 col-md-8 col-lg-7">
+                <h2>Teclib Box Configuration</h2>
+            </div>
+        </div>
+        <div class="row-70"></div>
+        <div class="row">
+            <div class="col-12 col-md-8 col-lg m-auto">
+                <form action="/form/save_config" method="post">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card" style="margin:5px">
+                              <div class="card-body">
+                                <h5 class="card-title">RabbitMQ</h5>
+                                <p class="card-text">
+                                    <div class="form-group row">
+                                        <label for="rabbitmq_host" class="col-sm-4 col-form-label">Host</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" name="rabbitmq_host" value="{{ rabbitmq_host }}" placeholder="localhost" type="text" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="rabbitmq_user" class="col-sm-4 col-form-label">User</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" name="rabbitmq_user" value="{{ rabbitmq_user }}" placeholder="guest" type="text" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="rabbitmq_password" class="col-sm-4 col-form-label">Password</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" name="rabbitmq_password" value="{{ rabbitmq_password }}" placeholder="guest" type="password" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="rabbitmq_port" class="col-sm-4 col-form-label">Port</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" name="rabbitmq_port" value="{{ rabbitmq_port }}" placeholder="5671" type="text" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="rabbitmq_https" class="col-sm-4 col-form-label">RabbitMQ HTTPS</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control" name="rabbitmq_https" value="{{ rabbitmq_https }}" placeholder="1" type="text">
+                                            <small id="rabbitmq_httpsHelp" class="form-text text-muted">1 for https, 0 for http</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="rabbitmq_path" class="col-sm-4 col-form-label">Path</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" name="rabbitmq_path" value="{{ rabbitmq_path }}" placeholder="/" type="text" required>
+                                        </div>
+                                    </div>
+                                   <button class="btn btn-primary" type="submit">Save</button>
+                                  </p>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card" style="margin:5px">
+                              <div class="card-body">
+                                <h5 class="card-title">Odoo</h5>
+                                <p class="card-text">
+                                    <div class="form-group row">
+                                        <label for="rabbitmq_exchange" class="col-sm-4 col-form-label">Exchange</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" name="rabbitmq_exchange" value="{{ rabbitmq_exchange }}" placeholder="RabbitMQ Exchange Name" type="text" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="queue_names" class="col-sm-4 col-form-label">Queues</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" name="queue_names" value="{{ queue_names }}" placeholder="queue1,queue2,queue3" type="text" required>
+                                            <small id="queue_namesHelp" class="form-text text-muted">ex: queue1,queue2,queue3</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="rabbitmq_delivery_mode" class="col-sm-4 col-form-label">Delivery Mode</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" name="rabbitmq_delivery_mode" value="{{ rabbitmq_delivery_mode }}" placeholder="1 or 2" type="text" required>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" type="submit">Save</button>
+                                </p>
+                              </div>
+                            </div>
+                        </div>
+                </form>
+                <div class="col-sm-12">
+                    <div class="card" style="margin:5px">
+                      <div class="card-body">
+                        <h5 class="card-title">Cups printers</h5>
+                        <p class="card-text">
+                            {% if cups_printer %}
+                                <table class="table">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">Printer</th>
+                                      <th scope="col">Message</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for device in cups_printer %}
+                                    <tr>
+                                        <td>
+                                            {{ device }}
+                                        </td>
+                                        <td>
+                                            {{ cups_printer[device]['printer-state-message'] }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                            {% else %}
+                            <span>No such device</span>
+                            {% endif %}
+                        </p>
+<!--                                <h5 class="card-title">USB printers</h5>-->
+<!--                                <p class="card-text">-->
+<!--                                    {% if usb_devices %}-->
+<!--                                        {% for device in usb_devices %}-->
+<!--                                        <li>{{ device['id'] }} : {{ device['tag'] }}</li>-->
+<!--                                        {% endfor %}-->
+<!--                                    {% else %}-->
+<!--                                    <span>No such device</span>-->
+<!--                                    {% endif %}-->
+<!--                                </p>-->
+                      </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="card" style="margin:5px">
+                      <div class="card-body">
+                        <h5 class="card-title">Queues</h5>
+                        <p class="card-text">
+                            {% if messages %}
+                            <div class="container">
+                                <table class="table">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">Queue</th>
+                                      <th scope="col">Number</th>
+                                      <th scope="col">Key</th>
+                                      <th scope="col">Name</th>
+<!--                                      <th scope="col">Actions</th>-->
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for queue in messages %}
+                                        {% for message in messages[queue]['messages'] %}
+                                            <tr>
+                                                <td>
+                                                    {{ queue }} <span class="badge badge-secondary">{{ messages[queue]['count'] }}</span>
+                                                </td>
+                                                <td>
+                                                    {{ message['sequence'] }}
+                                                </td>
+                                                <td>
+                                                    {{ message['name'] }}
+                                                </td>
+                                                <td>
+                                                    {{ message['routing_key'] }}
+                                                </td>
+<!--                                                <td>-->
+<!--                                                    <form action="/form/printer_action" method="post">-->
+<!--                                                        <input name="name" value="{{ message['name'] }}" type="hidden">-->
+<!--                                                        <input name="routing_key" value="{{ message['routing_key'] }}" type="hidden">-->
+<!--                                                        <button class="btn btn-primary" name="print" type="submit">Print</button>-->
+<!--                                                        <button class="btn btn-primary" name="cancel" type="submit">Cancel</button>-->
+<!--                                                    </form>-->
+<!--                                                </td>-->
+                                            </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                 </tbody>
+                                </table>
+                          </div>
+                            {% else %}
+                            <span>No such device</span>
+                            {% endif %}
+                        </p>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+{%endblock%}

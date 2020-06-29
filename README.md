@@ -35,11 +35,11 @@ Nous avons développé un script basé sur [le script d'odoo](https://github.com
 
 1. Ajouter une imprimante sur le serveur CUPS:
 
-> <img src="img/admin_page.png" width="800">
+> <img src="readme_img/admin_page.png" width="800">
 
 Cliquez sur Add Printer:
 
-> <img src="img/protocols.png" width="800">
+> <img src="readme_img/protocols.png" width="800">
 
 Sur cette page vous avez tous les protocols possible communications de entre les imprimantes et le serveur Cups
 
@@ -47,11 +47,11 @@ Ajoutez l'imprimante (Exemple clissimo_printer)
 
 Après avoir sélectionné l'imprimante "HP Color LaserJet MFP M476nw (HP Color LaserJet MFP M476nw)"
 
-> <img src="img/select_printer.png" width="800">
+> <img src="readme_img/select_printer.png" width="800">
 
 Cliquez sur continu
 
-> <img src="img/info_printer.png" width="800">
+> <img src="readme_img/info_printer.png" width="800">
 
 if faut bien noter que printer name est unique (dans notre cas colissimo_printer)
 
