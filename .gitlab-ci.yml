@@ -1,6 +1,7 @@
 image: docker:stable
 services:
- - docker:dind
+ - name: docker:dind
+   command: ["--experimental"]
 
 variables:
   DOCKER_DRIVER: overlay2
