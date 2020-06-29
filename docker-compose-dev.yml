@@ -2,8 +2,9 @@ version: '3.6'
 services:
   odoo-box-config:
     container_name: odoo-box-config
+    hostname: odoo-box-config
     build:
-      context: config
+      context: ./config
     ports:
       - 8090:5000
     privileged: true
@@ -28,7 +29,9 @@ services:
 
   odoo-box-printer:
     container_name: odoo-box-printer
-    build: printer
+    hostname: odoo-box-printer
+    build:
+      context: ./printer
     privileged: true
     restart: always
     volumes:
@@ -48,7 +51,9 @@ services:
 
   odoo-box-cups:
     container_name: odoo-box-cups
-    build: cups
+    hostname: odoo-box-cups
+    build:
+      context: ./cups
     privileged: true
     ports:
       - 8091:631
