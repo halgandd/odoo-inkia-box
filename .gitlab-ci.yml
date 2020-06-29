@@ -16,6 +16,7 @@ stages:
   - Build printer
 
 buildx:
+  image: docker:git
   stage: buildx
   variables:
     GIT_STRATEGY: none
