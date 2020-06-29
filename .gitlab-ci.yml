@@ -29,9 +29,9 @@ docker build printer:
   only:
     - v2
   script:
-    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer -f ./printer
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer ./printer
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer
-    - docker build --build-arg BASE_ARCH=arm32v7 -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm32v7 -f ./printer
+    - docker build --build-arg BASE_ARCH=arm32v7 -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm32v7 ./printer
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer_arm32v7
 
 
