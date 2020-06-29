@@ -5,7 +5,7 @@ services:
 
 variables:
   DOCKER_DRIVER: overlay2
-
+  DOCKER_CLI_EXPERIMENTAL: "enabled"
 
 before_script:
   - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" --password-stdin
@@ -18,6 +18,8 @@ docker build config:
   stage: Build config
   only:
     - v2
+  variables:
+    DOCKER_CLI_EXPERIMENTAL: "enabled"
   script:
     - export DOCKER_CLI_EXPERIMENTAL=enabled
     - export DOCKER_BUILDKIT=1
