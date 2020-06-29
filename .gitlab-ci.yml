@@ -11,16 +11,23 @@ before_script:
   - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u "$CI_REGISTRY_USER" --password-stdin
 
 stages:
-  - Build print_rabbitmq
+  - Build config
+  - Build printer
 
 
-docker build:
-  stage: Build print_rabbitmq
+docker build config:
+  stage: Build config
   only:
     - v2
   script:
     - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config -f ./config/Dockerfile .
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config
+
+docker build config:
+  stage: Build printer
+  only:
+    - v2
+  script:
     - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer -f ./printer/Dockerfile .
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:printer
 
