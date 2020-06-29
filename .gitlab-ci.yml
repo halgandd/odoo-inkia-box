@@ -22,7 +22,8 @@ docker build config:
   script:
 #    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config ./config
 #    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config
-    - mkdir -p /etc/docker && echo '{"experimental": true}' > /etc/docker/daemon.json
+    - mkdir -p /etc/docker
+    - echo '{"experimental": true}' > /etc/docker/daemon.json
     - mkdir -p ~/.docker/cli-plugins
     - wget -O ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64
     - chmod a+x ~/.docker/cli-plugins/docker-buildx
