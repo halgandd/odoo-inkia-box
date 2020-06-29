@@ -14,6 +14,19 @@ stages:
   - Build config
   - Build printer
 
+buildx:
+  stage: buildx
+  variables:
+    GIT_STRATEGY: none
+  artifacts:
+    paths:
+      - buildx
+    expire_in: 1 hour
+  script:
+    - export DOCKER_BUILDKIT=1
+    - git clone git://github.com/docker/buildx ./docker-buildx
+    - docker build --platform=local -o . ./docker-buildx
+
 
 docker build config:
   stage: Build config
@@ -22,11 +35,6 @@ docker build config:
   script:
 #    - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config ./config
 #    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config
-    - mkdir -p /etc/docker
-    - echo '{"experimental": true}' > /etc/docker/daemon.json
-    - mkdir -p ~/.docker/cli-plugins
-    - wget -O ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64
-    - chmod a+x ~/.docker/cli-plugins/docker-buildx
     - docker buildx  --platform "linux/arm/v7" -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config_arm32v7 ./config
     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:config_arm32v7
 
