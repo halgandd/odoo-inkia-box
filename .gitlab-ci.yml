@@ -26,6 +26,11 @@ buildx:
     expire_in: 1 hour
   services:
     - docker:19.03-dind
+  before_script:
+      # Enable experimental features in Docker client
+      - mkdir $HOME/.docker
+      - "echo -e '{\n  \"experimental\": \"enabled\"\n}' | tee $HOME/.docker/config.json"
+      - docker version
   script:
     - export DOCKER_BUILDKIT=1
     - git clone git://github.com/docker/buildx ./docker-buildx
