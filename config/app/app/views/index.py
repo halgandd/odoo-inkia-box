@@ -51,6 +51,7 @@ def save_config():
     set_env(f, data, "RABBITMQ_DELIVERY_MODE", "rabbitmq_delivery_mode")
     set_env(f, data, "RABBITMQ_HTTPS", "rabbitmq_https", "1")
     set_env(f, data, "ODOO_HOST", "odoo_host", "")
+    set_env(f, data, "ODOO_SSH_PORT_TUNNEL", "odoo_ssh_port_tunnel", "")
 
     f.write("%s=%s\r\n" % ("FILELOG", os.environ.get("FILELOG")))
     f.write("%s=%s\r\n" % ("LOG_LEVEL", os.environ.get("LOG_LEVEL")))
@@ -172,4 +173,5 @@ def index():
                            rabbitmq_delivery_mode=os.environ.get("RABBITMQ_DELIVERY_MODE","2"),
                            port_cups=os.environ.get("CUPS_PORT","631"),
                            odoo_host=os.environ.get("ODOO_HOST", ""),
+                           odoo_ssh_port_tunnel=os.environ.get("ODOO_SSH_PORT_TUNNEL", ""),
                            )
