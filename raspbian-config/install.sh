@@ -4,16 +4,16 @@
 ########################################################################################################################
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied please add name for box"
+    echo "No arguments supplied please add name and ip for box ./install name ip"
     exit 1
 fi
 
 NAME=$1
 USER=pi
-IP=192.168.0.31
+IP=$2
 PASSWORD=raspberry
 NEW_PASSOWRD=teclib@
-PERSONNAL_TOKEN=HA3teNDxC6gtcsvVZ2UL
+PERSONNAL_TOKEN=KBzKEk1fvd_nznwuLr3J
 PROJECT_ID=746
 
 ########################################################################################################################
