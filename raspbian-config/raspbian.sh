@@ -99,14 +99,15 @@ if [ ! -n "$(grep "^gitlab.teclib-erp.com" ~/.ssh/known_hosts)" ]; then
   ssh-keyscan registry.teclib-erp.com >> ~/.ssh/known_hosts 2>/dev/null;
 fi
 
+echo $(cat /root/.ssh/gitlab-david-token) | docker login -u dhalgand@teclib.com --password-stdin registry.teclib-erp.com
+# TODO FIX
+#echo $(cat /root/.ssh/gitlab-token) | docker login -u $(cat /root/.ssh/gitlab-user) --password-stdin registry.teclib-erp.com
+
 if ! [ -d "/opt/teclib-box" ]; then
   git clone git@gitlab.teclib-erp.com:docker/teclib-box.git /opt/teclib-box
 else
   cd /opt/teclib-box
   git pull
-  # TODO FIX
-#  echo $(cat /root/.ssh/gitlab-token) | docker login -u $(cat /root/.ssh/gitlab-user) --password-stdin registry.teclib-erp.com
-  echo $(cat /root/.ssh/gitlab-david-token) | docker login -u dhalgand@teclib.com --password-stdin registry.teclib-erp.com
   ./start.sh
 fi
 
