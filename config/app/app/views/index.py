@@ -50,6 +50,7 @@ def save_config():
     set_env(f, data, "RABBITMQ_EXCHANGE_NAME", "rabbitmq_exchange")
     set_env(f, data, "RABBITMQ_DELIVERY_MODE", "rabbitmq_delivery_mode")
     set_env(f, data, "RABBITMQ_HTTPS", "rabbitmq_https", "1")
+    set_env(f, data, "ODOO_HOST", "odoo_host", "")
 
     f.write("%s=%s\r\n" % ("FILELOG", os.environ.get("FILELOG")))
     f.write("%s=%s\r\n" % ("LOG_LEVEL", os.environ.get("LOG_LEVEL")))
@@ -170,4 +171,5 @@ def index():
                            rabbitmq_exchange=os.environ.get("RABBITMQ_EXCHANGE_NAME","odoo"),
                            rabbitmq_delivery_mode=os.environ.get("RABBITMQ_DELIVERY_MODE","2"),
                            port_cups=os.environ.get("CUPS_PORT","631"),
+                           odoo_host=os.environ.get("ODOO_HOST", ""),
                            )
