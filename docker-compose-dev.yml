@@ -12,6 +12,7 @@ services:
     volumes:
       - /var/run.docker.sock:/var/run/docker.sock
       - ~/.odoo-box.env:/opt/env.dev
+      - ./config/app:/app
     env_file:
         - ~/.odoo-box.env
     environment:
@@ -22,6 +23,7 @@ services:
       CUPS_HOST: cups
       CUPS_USER: print
       CUPS_PASSWORD: print
+      CUPS_PORT: 8091
     devices:
       - /dev:/dev
     external_links:

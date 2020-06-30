@@ -21,6 +21,7 @@ services:
       CUPS_HOST: cups
       CUPS_USER: print
       CUPS_PASSWORD: print
+      CUPS_PORT: 8091
     devices:
       - /dev:/dev
     external_links:
