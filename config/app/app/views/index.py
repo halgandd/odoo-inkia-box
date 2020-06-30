@@ -169,4 +169,5 @@ def index():
                            rabbitmq_https=os.environ.get("RABBITMQ_HTTPS", "1"),
                            rabbitmq_exchange=os.environ.get("RABBITMQ_EXCHANGE_NAME","odoo"),
                            rabbitmq_delivery_mode=os.environ.get("RABBITMQ_DELIVERY_MODE","2"),
+                           port_cups=os.environ.get("CUPS_PORT","631"),
                            )
