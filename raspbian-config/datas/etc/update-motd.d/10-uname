@@ -1,0 +1,6 @@
+#!/bin/sh
+
+_IP=$(/sbin/ifconfig eth0 | grep 'inet ' | awk '{ print $2}') || true
+if [ "$_IP" ]; then
+  printf "You can access to configuration here :\n http://%s\n\n\n" "$_IP"
+fi
