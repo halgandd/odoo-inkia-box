@@ -9,6 +9,7 @@ from app import app
 
 if __name__ == "__main__":
 	port = int(os.environ.get("PORT", 5000))
+	app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 	if os.environ.get("FLASK_ENV", "production") == 'development':
 		extra_dirs = ['app', ]
 		extra_files = extra_dirs[:]

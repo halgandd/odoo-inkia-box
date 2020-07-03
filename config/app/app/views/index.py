@@ -4,7 +4,7 @@ Python Application Template
 Licence: GPLv3
 """
 
-from flask import render_template, make_response, request, redirect
+from flask import render_template, make_response, request, redirect, flash
 from app import app
 import cups
 import os
@@ -27,8 +27,23 @@ def printer_action():
         app.logger.info("Cancel")
     return redirect('/')
 
-@app.route('/form/save_config', methods=['GET', 'POST'])
-def save_config():
+@app.route('/action/reload', methods=['GET', 'POST'])
+def action_reload():
+    app.logger.info("Reload")
+    open("/action/reload",'a').close()
+    flash('Teclib Box is reloading', "warning")
+    return redirect('/')
+
+@app.route('/action/restart', methods=['GET', 'POST'])
+def action_restart():
+    app.logger.info("Restart")
+    open("/action/restart", 'a').close()
+    flash('Teclib Box is restarting', "warning")
+    return redirect('/')
+
+
+@app.route('/action/save', methods=['GET', 'POST'])
+def action_save():
     app.logger.info("Save configuration")
     def set_env(file, data_form, env_name, var_name, default=""):
         if data_form.get(var_name):
@@ -57,6 +72,7 @@ def save_config():
     f.write("%s=%s\r\n" % ("LOG_LEVEL", os.environ.get("LOG_LEVEL")))
 
     f.close()
+    flash("Saved configuration", "primary")
     return redirect('/')
 
 
@@ -72,7 +88,7 @@ def index():
             conn = cups.Connection()
             devices = conn.getPrinters()
         except Exception as e:
-            app.logger.error("Cups error %s" % (e))
+            flash("Cups Error", "danger")
 
         return devices
 
@@ -125,38 +141,48 @@ def index():
             return messages
         params = pika.URLParameters(rabbitmq_url)
         app.logger.info("RabbitMQ Params : %s", str(params))
-        connection = pika.BlockingConnection(params)
-        for queue_name in os.environ.get("QUEUE_NAMES").split(','):
-            app.logger.info("Check queue %s" % (queue_name))
-            channel = connection.channel()
-            queue = channel.queue_declare(queue=queue_name, durable=True)
-            if queue_name not in messages:
-                messages[queue_name] = {'count': queue.method.message_count, 'messages': []}
-            app.logger.info("%s messages in queue %s" % (queue.method.message_count, queue_name))
-            for i in range(queue.method.message_count):
-                method_frame, header_frame, body = channel.basic_get(queue_name)
-                decoded_message = body.decode()
-                msg = json.loads(decoded_message)
-                app.logger.info("Queue %s : message %s, routing key %s name %s" % (queue_name, i, method_frame.routing_key, msg['name']))
-                channel.basic_nack(method_frame.delivery_tag)
-                messages[queue_name]['messages'].append({'sequence':i+1, 'routing_key':method_frame.routing_key, 'name':msg['name']})
-        connection.close()
+        try:
+            connection = pika.BlockingConnection(params)
+            if os.environ.get("QUEUE_NAMES", ""):
+                for queue_name in os.environ.get("QUEUE_NAMES", "").split(','):
+                    app.logger.info("Check queue %s" % (queue_name))
+                    channel = connection.channel()
+                    queue = channel.queue_declare(queue=queue_name, durable=True)
+                    if queue_name not in messages:
+                        messages[queue_name] = {'count': queue.method.message_count, 'messages': []}
+                    app.logger.info("%s messages in queue %s" % (queue.method.message_count, queue_name))
+                    for i in range(queue.method.message_count):
+                        method_frame, header_frame, body = channel.basic_get(queue_name)
+                        decoded_message = body.decode()
+                        msg = json.loads(decoded_message)
+                        app.logger.info("Queue %s : message %s, routing key %s name %s" % (queue_name, i, method_frame.routing_key, msg['name']))
+                        channel.basic_nack(method_frame.delivery_tag)
+                        messages[queue_name]['messages'].append({'sequence':i+1, 'routing_key':method_frame.routing_key, 'name':msg['name']})
+                connection.close()
+        except:
+            flash("RabbitMQ Error", "danger")
         return messages
 
-    def get_docker_status():
-        app.logger.info("Get docker status")
-        # try:
-        #     client = docker.DockerClient(base_url='unix://var/run/docker.sock',version="1.18")
-        #     for container in client.containers.list():
-        #         app.logger.info(container.id)
-        # except:
-        #     app.logger.info("Docker error")
+    def get_docker_containers():
+        app.logger.info("Get docker containers")
+        containers = []
+        try:
+            client = docker.from_env()
+            for container in client.containers.list():
+                app.logger.info(container.logs)
+                containers.append({
+                    'id': container.id,
+                    'name': container.name,
+                })
+        except:
+            flash("Docker Error", "danger")
+        return containers
 
     messages = get_messages()
     usb_devices = get_usb_devices()
     network_devices=get_network_devices()
     cups_printer = get_cups_printer()
-    docker_status = get_docker_status()
+    containers = get_docker_containers()
     return render_template("index.html", app=app,
                            messages=messages,
                            network_devices=network_devices,
@@ -174,4 +200,5 @@ def index():
                            port_cups=os.environ.get("CUPS_PORT","631"),
                            odoo_host=os.environ.get("ODOO_HOST", ""),
                            odoo_ssh_port_tunnel=os.environ.get("ODOO_SSH_PORT_TUNNEL", ""),
+                           containers=containers,
                            )

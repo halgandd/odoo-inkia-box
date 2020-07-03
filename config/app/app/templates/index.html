@@ -8,10 +8,24 @@
                 <h2>Teclib Box Configuration</h2>
             </div>
         </div>
-        <div class="row-70"></div>
+        <div class="row">
+            <div class="col-12 m-0">
+                {% with notifications = get_flashed_messages(with_categories=true) %}
+                  {% if notifications %}
+                    <ul class="m-0">
+                    {% for level, notification in notifications %}
+                        <div class="alert alert-{{level}}" role="alert">
+                          {{ notification }}
+                        </div>
+                    {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endwith %}
+            </div>
+        </div>
         <div class="row">
             <div class="col-12 col-md-8 col-lg m-auto">
-                <form action="/form/save_config" method="post">
+                <form action="/action/save" method="post">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="card" style="margin:5px">
@@ -55,7 +69,6 @@
                                             <input class="form-control" name="rabbitmq_path" value="{{ rabbitmq_path }}" placeholder="/" type="text" required>
                                         </div>
                                     </div>
-                                   <button class="btn btn-primary" type="submit">Save</button>
                                   </p>
                               </div>
                             </div>
@@ -96,7 +109,17 @@
                                             <input class="form-control" name="rabbitmq_delivery_mode" value="{{ rabbitmq_delivery_mode }}" placeholder="1 or 2" type="text" required>
                                         </div>
                                     </div>
-                                    <button class="btn btn-primary" type="submit">Save</button>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="btn btn-primary" type="submit">Save</button>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="btn btn-warning" href="action/reload">Reload</a>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="btn btn-danger" href="action/restart">Restart</a>
+                                        </div>
+                                    </div>
                                 </p>
                               </div>
                             </div>
@@ -131,7 +154,8 @@
                             {% else %}
                             <span>No such device</span>
                             {% endif %}
-                            <a class="nav-link" href="/admin" target="_blank" onmouseover="javascript:event.target.port={{ port_cups }}">Cups</span></a>
+                            <br/>
+                            <a class="btn btn-primary" href="/admin" target="_blank" onmouseover="javascript:event.target.port={{ port_cups }}">Cups</span></a>
                         </p>
 <!--                                <h5 class="card-title">USB printers</h5>-->
 <!--                                <p class="card-text">-->
@@ -200,7 +224,43 @@
                       </div>
                     </div>
                 </div>
+                <div class="col-sm-12">
+                    <div class="card" style="margin:5px">
+                      <div class="card-body">
+                        <h5 class="card-title">Container</h5>
+                        <p class="card-text">
+                            {% if containers %}
+                            <div class="container">
+                                <table class="table">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">Id</th>
+                                      <th scope="col">Name</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for container in containers %}
+                                        <tr>
+                                            <td>
+                                                {{ container['id'] }}
+                                            </td>
+                                            <td>
+                                                {{ container['name'] }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                 </tbody>
+                                </table>
+                          </div>
+                            {% else %}
+                            <span>No such container</span>
+                            {% endif %}
+                        </p>
+                      </div>
+                    </div>
+                </div>
             </div>
+
 
 
 
