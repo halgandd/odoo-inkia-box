@@ -1,4 +1,4 @@
-FROM python:3.7-buster
+FROM python:3.7-slim-buster
 
 RUN apt-get update && apt-get -y install \
 whois \
@@ -22,16 +22,14 @@ foomatic-db-compressed-ppds \
 openprinting-ppds \
 gutenprint-locales \
 python-nmap \
-cups-client \
-vim
+usbutils \
+cups-client
 
-COPY requirements.txt /tmp/
-RUN pip3 install -r /tmp/requirements.txt
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY app.py .
 
-EXPOSE 631
-EXPOSE 5672
-
+ENTRYPOINT ["python3"]
 CMD ["/app.py" ]
 

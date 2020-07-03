@@ -26,7 +26,10 @@ logger.addHandler(handler)
 ########################################################################################################################
 # ENV
 ########################################################################################################################
-queues = os.environ.get("QUEUE_NAMES").split(',')
+if not os.environ.get("QUEUE_NAMES",""):
+    logger.error("Queue Error")
+    exit 1
+queues = os.environ.get("QUEUE_NAMES","").split(',')
 user =  os.environ.get("RABBITMQ_USER")
 password =  os.environ.get("RABBITMQ_PASSWORD")
 host =  os.environ.get("RABBITMQ_HOST")
