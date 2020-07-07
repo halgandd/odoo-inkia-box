@@ -1,0 +1,34 @@
+# Install
+##Install Go
+cd /usr/local
+wget https://golang.org/dl/go1.14.4.linux-amd64.tar.gz
+tar -xvzf go1.14.4.linux-amd64.tar.gz
+echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
+
+##Install Dependencies
+sudo apt-get install qemu qemu-utils
+sudo apt-get install git
+sudo apt-get install unzip
+sudo apt-get install qemu-user-static
+sudo apt-get install e2fsprogs
+sudo apt-get install dosfstools
+sudo apt-get install libarchive-tools
+
+##Install packer
+cd /usr/local/bin/
+wget https://releases.hashicorp.com/packer/1.6.0/packer_1.6.0_linux_amd64.zip
+unzip packer_1.6.0_linux_amd64.zip
+
+##Install packer-builder-arm
+cd tmp
+git clone https://github.com/mkaczanowski/packer-builder-arm
+cd packer-builder-arm
+go mod download
+go build
+sudo cp packer-builder-arm  /usr/local/bin/
+
+
+# Create Image
+./start_packer.sh name_of_the_box
+
+

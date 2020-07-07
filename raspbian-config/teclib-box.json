@@ -1,0 +1,116 @@
+{
+  "variables": {
+  },
+  "builders": [{
+    "type": "arm",
+    "file_urls" : ["https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2020-02-14/2020-02-13-raspbian-buster-lite.zip"],
+    "file_checksum_url": "https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2020-02-14/2020-02-13-raspbian-buster-lite.zip.sha256",
+    "file_checksum_type": "sha256",
+    "file_target_extension": "zip",
+    "image_build_method": "resize",
+    "image_path": "teclib-box.img",
+    "image_size": "5G",
+    "image_type": "dos",
+    "image_partitions": [
+      {
+        "name": "boot",
+        "type": "c",
+        "start_sector": "8192",
+        "filesystem": "vfat",
+        "size": "256M",
+        "mountpoint": "/boot"
+      },
+      {
+        "name": "root",
+        "type": "83",
+        "start_sector": "532480",
+        "filesystem": "ext4",
+        "size": "0",
+        "mountpoint": "/"
+      }
+    ],
+    "image_chroot_env": ["PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"],
+    "qemu_binary_source_path": "/usr/bin/qemu-arm-static",
+    "qemu_binary_destination_path": "/usr/bin/qemu-arm-static"
+  }],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "touch /boot/ssh"]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sed -i 's/^# *\\(fr_FR.UTF-8\\)/\\1/' /etc/locale.gen",
+        "locale-gen",
+        "update-locale LANG=fr_FR.UTF-8 LANGUAGE=fr_FR"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "./ssh/{{user `name`}}/",
+      "destination": "/root/.ssh/"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "touch /root/.ssh/known_hosts",
+        "chmod 600 /root/.ssh/id_rsa",
+        "mv /root/.ssh/teclib-box.env /root/.teclib-box.env"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "DEBIAN_FRONTEND=noninteractive apt update -yq",
+        "DEBIAN_FRONTEND=noninteractive apt install -yq figlet vim git inotify-tools"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "curl -fsSL https://get.docker.com -o get-docker.sh",
+        "sh get-docker.sh",
+        "usermod -aG docker pi"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "DEBIAN_FRONTEND=noninteractive apt install -yq python3-distutils python3-dev libffi-dev libssl-dev python3-pip",
+        "pip3 install docker-compose"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "curl 'https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip' > ngrok.zip",
+        "unzip ngrok.zip"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "./datas/",
+      "destination": "/"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "update-rc.d -f teclib-box-actions.sh defaults",
+        "update-rc.d -f teclib-box-docker.sh defaults",
+        "update-rc.d -f teclib-box-tunnel.sh defaults"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "ssh-keyscan gitlab.teclib-erp.com >> ~/.ssh/known_hosts 2>/dev/null;",
+        "ssh-keyscan registry.teclib-erp.com >> ~/.ssh/known_hosts 2>/dev/null;",
+        "echo $(cat /root/.ssh/gitlab-david-token) | docker login -u dhalgand@teclib.com --password-stdin registry.teclib-erp.com",
+        "#echo $(cat /root/.ssh/gitlab-token) | docker login -u $(cat /root/.ssh/gitlab-user) --password-stdin registry.teclib-erp.com",
+        "git clone git@gitlab.teclib-erp.com:docker/teclib-box.git /opt/teclib-box"
+      ]
+    }
+  ]
+}
