@@ -11,6 +11,7 @@ services:
     volumes:
       - /var/run.docker.sock:/var/run/docker.sock
       - ~/.odoo-box.env:/opt/env.dev
+      - ./:/action
     env_file:
         - ~/.odoo-box.env
     environment:
