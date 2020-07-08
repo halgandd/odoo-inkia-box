@@ -11,7 +11,6 @@ import os
 import re
 import subprocess
 from datetime import date
-import nmap
 import pika
 import json
 import docker
@@ -88,20 +87,8 @@ def index():
             conn = cups.Connection()
             devices = conn.getPrinters()
         except Exception as e:
+            app.logger.error(e)
             flash("Cups Error", "danger")
-
-        return devices
-
-    def get_network_devices():
-        # It's not working
-        app.logger.info("Search Network devices")
-        return []
-        nm = nmap.PortScanner()
-        nm.scan(hosts='192.168.1.0/24', arguments='-n -sP -PE -PA21,23,80,3389')
-        devices = []
-        for x in nm.all_hosts():
-            app.logger.info("Network Device : %s " % x)
-            devices.append((x, nm[x]['status']['state']))
 
         return devices
 
@@ -159,7 +146,8 @@ def index():
                         channel.basic_nack(method_frame.delivery_tag)
                         messages[queue_name]['messages'].append({'sequence':i+1, 'routing_key':method_frame.routing_key, 'name':msg['name']})
                 connection.close()
-        except:
+        except Exception as e:
+            app.logger.error(e)
             flash("RabbitMQ Error", "danger")
         return messages
 
@@ -180,12 +168,10 @@ def index():
 
     messages = get_messages()
     usb_devices = get_usb_devices()
-    network_devices=get_network_devices()
     cups_printer = get_cups_printer()
     containers = get_docker_containers()
     return render_template("index.html", app=app,
                            messages=messages,
-                           network_devices=network_devices,
                            usb_devices=usb_devices,
                            cups_printer=cups_printer,
                            queue_names=os.environ.get("QUEUE_NAMES",""),

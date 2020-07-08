@@ -39,6 +39,7 @@ services:
     restart: always
     volumes:
       - /tmp/print:/tmp/printed
+      - ./printer/app.py:/app.py
     env_file:
         - ~/.odoo-box.env
     environment:
