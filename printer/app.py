@@ -60,9 +60,10 @@ def process_message(body):
         if body:
             decoded_message = body.decode()
             msg = json.loads(decoded_message)
-            logger.info(">>>>>>>%s" % (msg.get('object_id'))
+            logger.info(">>>>>>>%s" % (msg.get('object_id')))
             logger.info("Data processing of picking name %s and id %s" % (msg.get('name'), msg.get('object_id')))
             printer_name = msg.get('printer_name')
+            printer_options = msg.get('printer_options', {}) or {}
             # Filename
             report_name = "/tmp/printed/%s_%s.%s" % (
             msg.get('object_id') or 'object_id', msg.get('created_at') or 'created_at', msg.get('file_extension') or 'pdf')
@@ -79,15 +80,15 @@ def process_message(body):
             cups.setPasswordCB(lambda a: os.environ.get("CUPS_PASSWORD"))
             conn = cups.Connection()
             # Cups print
-            logger.info("Send Data %s to printer %s" % (report_name, printer_name))
-            conn.printFile(printer_name, os.path.abspath(report_name), "Python_Status_print", {})
+            logger.info("Send Data %s to printer %s" % (os.path.abspath(report_name), printer_name))
+            conn.printFile(printer_name, os.path.abspath(report_name), "Python_Status_print", printer_options)
             logger.info("Printing %s %s" % (report_name, printer_name))
             # Remove File
             # os.remove(report_name)
-            logger.info("<<<<<<<%s" % (msg.get('object_id'))
+            logger.info("<<<<<<<%s" % (msg.get('object_id')))
             sleep(2)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
 
 def callback(channel, method, properties, body):
     try:
