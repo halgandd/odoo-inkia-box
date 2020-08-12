@@ -80,7 +80,7 @@ def process_message(body):
             cups.setPasswordCB(lambda a: os.environ.get("CUPS_PASSWORD"))
             conn = cups.Connection()
             # Cups print
-            logger.info("Send Data %s to printer %s" % (os.path.abspath(report_name), printer_name))
+            logger.info("Send Data %s to printer %s options %s" % (os.path.abspath(report_name), printer_name, printer_options))
             conn.printFile(printer_name, os.path.abspath(report_name), "Python_Status_print", printer_options)
             logger.info("Printing %s %s" % (report_name, printer_name))
             # Remove File
