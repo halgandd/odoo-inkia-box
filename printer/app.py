@@ -56,28 +56,38 @@ rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/%{path}'.format(
 # PROCESS
 ########################################################################################################################
 def process_message(body):
-    if body:
-        decoded_message = body.decode()
-        msg = json.loads(decoded_message)
-        printer_name = msg.get('printer_name')
-        logger.info("Data processing of picking name %s and id %s" % (msg.get('name'), msg.get('object_id')))
-        report_name = "/tmp/printed/%s_%s.%s" % (
-        msg.get('object_id') or 'object_id', msg.get('created_at') or 'created_at', msg.get('file_extension') or 'pdf')
-        mode = "wb" if msg.get('file_extension') in ['pdf', 'PDF'] else "w+"
-        with open(report_name, mode) as theFile:
-            theFile.write(
-                base64.b64decode(msg.get('data')) if msg.get('file_extension') in ['pdf', 'PDF'] else msg.get('data'))
-            logger.info("create report name %s" % (report_name))
-        theFile.close()
-        cups.setServer(os.environ.get("CUPS_HOST"))
-        cups.setUser(os.environ.get("CUPS_USER"))
-        cups.setPasswordCB(lambda a: os.environ.get("CUPS_PASSWORD"))
-        conn = cups.Connection()
-        logger.info("Send Data %s to printer %s" % (report_name, printer_name))
-        conn.printFile(printer_name, os.path.abspath(report_name), "Python_Status_print", {})
-        logger.info("Printing %s %s" % (report_name, printer_name))
-        os.remove(report_name)
-        sleep(2)
+    try:
+        if body:
+            decoded_message = body.decode()
+            msg = json.loads(decoded_message)
+            logger.info(">>>>>>>%s" % (msg.get('object_id'))
+            logger.info("Data processing of picking name %s and id %s" % (msg.get('name'), msg.get('object_id')))
+            printer_name = msg.get('printer_name')
+            # Filename
+            report_name = "/tmp/printed/%s_%s.%s" % (
+            msg.get('object_id') or 'object_id', msg.get('created_at') or 'created_at', msg.get('file_extension') or 'pdf')
+            report_name = report_name.replace(" ","").replace("-","").replace(":","")
+            # Create local file
+            with open(report_name, "wb") as theFile:
+                theFile.write(
+                    base64.b64decode(msg.get('data')))
+                logger.info("create report name %s" % (report_name))
+            theFile.close()
+            # Cups Connection
+            cups.setServer(os.environ.get("CUPS_HOST"))
+            cups.setUser(os.environ.get("CUPS_USER"))
+            cups.setPasswordCB(lambda a: os.environ.get("CUPS_PASSWORD"))
+            conn = cups.Connection()
+            # Cups print
+            logger.info("Send Data %s to printer %s" % (report_name, printer_name))
+            conn.printFile(printer_name, os.path.abspath(report_name), "Python_Status_print", {})
+            logger.info("Printing %s %s" % (report_name, printer_name))
+            # Remove File
+            # os.remove(report_name)
+            logger.info("<<<<<<<%s" % (msg.get('object_id'))
+            sleep(2)
+    except Exception as e:
+        logger.error(e)
 
 def callback(channel, method, properties, body):
     try:
