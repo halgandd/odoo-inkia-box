@@ -14,6 +14,7 @@ from datetime import date
 import pika
 import json
 import docker
+from urllib.parse import quote
 
 @app.route('/form/printer_action', methods=['GET', 'POST'])
 def printer_action():
@@ -112,7 +113,7 @@ def index():
         messages = {}
         https = bool(int(os.environ.get("RABBITMQ_HTTPS", "0"))) and 's' or ''
         user = os.environ.get("RABBITMQ_USER", "")
-        password = os.environ.get("RABBITMQ_PASSWORD", "")
+        password = quote(os.environ.get("RABBITMQ_PASSWORD", ""))
         host = os.environ.get("RABBITMQ_HOST", "")
         port = os.environ.get("RABBITMQ_PORT", "")
         path = os.environ.get("RABBITMQ_PATH", "")
