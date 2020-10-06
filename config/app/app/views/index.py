@@ -124,6 +124,7 @@ def index():
             port=port,
             path=path,
         )
+        app.logger.info("Url %s" % (rabbitmq_url))
         if not host or not user or not password or not path or not port:
             return messages
         params = pika.URLParameters(rabbitmq_url)
