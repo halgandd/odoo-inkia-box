@@ -127,9 +127,9 @@ def index():
         app.logger.info("Url %s" % (rabbitmq_url))
         if not host or not user or not password or not path or not port:
             return messages
-        params = pika.URLParameters(rabbitmq_url)
-        app.logger.info("RabbitMQ Params : %s", str(params))
         try:
+            params = pika.URLParameters(rabbitmq_url)
+            app.logger.info("RabbitMQ Params : %s", str(params))
             connection = pika.BlockingConnection(params)
             if os.environ.get("QUEUE_NAMES", ""):
                 for queue_name in os.environ.get("QUEUE_NAMES", "").split(','):
