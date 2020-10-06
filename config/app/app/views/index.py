@@ -61,7 +61,7 @@ def action_save():
     set_env(f, data, "RABBITMQ_PASSWORD", "rabbitmq_password")
     set_env(f, data, "RABBITMQ_HOST", "rabbitmq_host")
     set_env(f, data, "RABBITMQ_PORT", "rabbitmq_port")
-    set_env(f, data, "RABBITMQ_PATH", "rabbitmq_path", "2F")
+    set_env(f, data, "RABBITMQ_PATH", "rabbitmq_path", "/")
     set_env(f, data, "RABBITMQ_EXCHANGE_NAME", "rabbitmq_exchange")
     set_env(f, data, "RABBITMQ_DELIVERY_MODE", "rabbitmq_delivery_mode")
     set_env(f, data, "RABBITMQ_HTTPS", "rabbitmq_https", "1")
@@ -116,8 +116,8 @@ def index():
         password = quote(os.environ.get("RABBITMQ_PASSWORD", ""), safe='')
         host = os.environ.get("RABBITMQ_HOST", "")
         port = os.environ.get("RABBITMQ_PORT", "")
-        path = os.environ.get("RABBITMQ_PATH", "")
-        rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/%{path}'.format(
+        path = quote(os.environ.get("RABBITMQ_PATH", ""), safe='')
+        rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/{path}'.format(
             https=https,
             user=user,
             password=password,
@@ -181,7 +181,7 @@ def index():
                            rabbitmq_password=os.environ.get("RABBITMQ_PASSWORD",""),
                            rabbitmq_host=os.environ.get("RABBITMQ_HOST",""),
                            rabbitmq_port=os.environ.get("RABBITMQ_PORT", "5671"),
-                           rabbitmq_path=os.environ.get("RABBITMQ_PATH", "2F"),
+                           rabbitmq_path=os.environ.get("RABBITMQ_PATH", "/"),
                            rabbitmq_https=os.environ.get("RABBITMQ_HTTPS", "1"),
                            rabbitmq_exchange=os.environ.get("RABBITMQ_EXCHANGE_NAME","odoo"),
                            rabbitmq_delivery_mode=os.environ.get("RABBITMQ_DELIVERY_MODE","2"),
