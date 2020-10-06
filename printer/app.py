@@ -10,6 +10,7 @@ import json
 import sys
 from functools import partial
 import threading, time
+from urllib.parse import quote
 
 ########################################################################################################################
 # LOGGING
@@ -32,10 +33,10 @@ if not os.environ.get("QUEUE_NAMES",""):
 
 queues = os.environ.get("QUEUE_NAMES","").split(',')
 user =  os.environ.get("RABBITMQ_USER")
-password =  os.environ.get("RABBITMQ_PASSWORD")
+password =  quote(os.environ.get("RABBITMQ_PASSWORD"), safe='')
 host =  os.environ.get("RABBITMQ_HOST")
 port =  os.environ.get("RABBITMQ_PORT")
-path =  os.environ.get("RABBITMQ_PATH")
+path =  quote(os.environ.get("RABBITMQ_PATH"), safe='')
 https = os.environ.get("RABBITMQ_HTTPS")
 exchange_name =  os.environ.get("RABBITMQ_EXCHANGE_NAME") or ''
 delivery_mode =  os.environ.get("RABBITMQ_DELIVERY_MODE") or 2
@@ -43,7 +44,7 @@ delivery_mode =  os.environ.get("RABBITMQ_DELIVERY_MODE") or 2
 ########################################################################################################################
 # CONNECTION
 ########################################################################################################################
-rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/%{path}'.format(
+rabbitmq_url = 'amqp{https}://{user}:{password}@{host}:{port}/{path}'.format(
     https=bool(int(https)) and 's' or '',
     user=user,
     password=password,
