@@ -90,6 +90,7 @@ def process_message(body):
             sleep(2)
     except Exception as e:
         logger.error(e, exc_info=True)
+        raise e
 
 def callback(channel, method, properties, body):
     try:
